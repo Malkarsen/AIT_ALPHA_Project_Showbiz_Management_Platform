@@ -5,19 +5,49 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * Класс Event управляет списком артистов, используя HashSet для уникальности имен.
+ * Класс Event управляет списком артистов и продажей билетов.
  */
 public class Event {
     private String name; // Название мероприятия
     private Set<String> artistList; // Уникальные имена артистов
+    private int totalTickets; // Всего билетов
+    private int ticketsSold; // Количество проданных билетов
 
     /**
      * Конструктор мероприятия.
      * @param name Название события.
+     * @param totalTickets Количество билетов.
      */
-    public Event(String name) {
+    public Event(String name, int totalTickets) {
         this.name = name;
         this.artistList = new HashSet<>(); // HashSet гарантирует уникальность имен
+        this.totalTickets = totalTickets;
+        this.ticketsSold = 0; // Изначально билеты не проданы
+    }
+
+    /**
+     * Метод продажи билетов.
+     * @param count Количество билетов, которое нужно продать.
+     */
+    public void sellTickets(int count) {
+        if (count <= 0) {
+            throw new IllegalArgumentException("Количество билетов должно быть больше 0.");
+        }
+        if (ticketsSold + count > totalTickets) {
+            throw new IllegalArgumentException("Недостаточно билетов. Доступно только " + (totalTickets - ticketsSold) + ".");
+        }
+        ticketsSold += count;
+        System.out.println(count + " билетов продано. Осталось билетов: " + (totalTickets - ticketsSold));
+    }
+
+    /**
+     * Метод отображения информации о билетах.
+     */
+    public void printTicketInfo() {
+        System.out.println("Мероприятие: " + name);
+        System.out.println("Всего билетов: " + totalTickets);
+        System.out.println("Продано билетов: " + ticketsSold);
+        System.out.println("Осталось билетов: " + (totalTickets - ticketsSold));
     }
 
     /**
@@ -59,8 +89,4 @@ public class Event {
             }
         }
     }
-
-    // Геттеры
-    public String getName() { return name; }
-    public Set<String> getArtistList() { return new HashSet<>(artistList); } // Защита от изменений
 }
