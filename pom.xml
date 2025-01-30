@@ -108,6 +108,13 @@
             <!-- Ограничение зависимости только для тестов -->
             <!-- Dependency scope limited to tests -->
         </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.28</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>
