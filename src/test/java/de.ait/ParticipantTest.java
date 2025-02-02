@@ -5,11 +5,14 @@ import de.ait.Model.ParticipantStatus;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ParticipantTest {
     @Test
     void constructorTest() {
+
         Participant participant = new Participant("j123", "Anton", ParticipantStatus.NEW);
+
 
         String id = participant.getId();
         String name = participant.getName();
@@ -19,4 +22,20 @@ public class ParticipantTest {
         assertEquals("Anton", name);
         assertEquals(ParticipantStatus.NEW, status);
     }
+
+    @Test
+    void constructorTestShouldReturnExceptionWithIdNull() {
+        assertThrows(IllegalArgumentException.class, () -> new Participant(null, "Anton", ParticipantStatus.NEW));
+    }
+
+    @Test
+    void constructorTestShouldReturnExceptionWithNameNull() {
+        assertThrows(IllegalArgumentException.class, () -> new Participant("j123", null, ParticipantStatus.NEW));
+    }
+
+    @Test
+    void constructorTestShouldReturnExceptionWithStatusNull() {
+        assertThrows(IllegalArgumentException.class, () -> new Participant("j123", "Anton", null));
+    }
 }
+

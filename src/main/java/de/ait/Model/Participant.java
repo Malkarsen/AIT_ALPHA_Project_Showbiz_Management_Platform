@@ -29,27 +29,24 @@ public class Participant {
      * @param status Статус участника
      */
     public Participant(String id, String name, ParticipantStatus status) {
+        if (id == null || id.isEmpty()) {
+            System.out.println("Incorrect participant id");
+            log.error("Incorrect participant id");
+            throw new IllegalArgumentException("Incorrect participant id");
+        }
+        if (name == null || name.isEmpty()) {
+            System.out.println("Incorrect participant name");
+            log.error("Incorrect participant name");
+            throw new IllegalArgumentException("Incorrect participant name");
+        }
+        if (status == null) {
+            System.out.println("Incorrect participant id");
+            log.error("Incorrect participant id");
+            throw new IllegalArgumentException("Incorrect participant id");
+        }
         this.id = id;
         this.name = name;
         this.status = status;
-    }
-
-    /**
-     * Устанавливает новый идентификатор участника.
-     *
-     * @param id Новый идентификатор
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * Устанавливает новое имя участника.
-     *
-     * @param name Новое имя
-     */
-    public void setName(String name) {
-        this.name = name;
     }
 
     /**

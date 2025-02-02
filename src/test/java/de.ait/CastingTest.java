@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CastingTest {
@@ -52,5 +53,13 @@ public class CastingTest {
 
         assertTrue(updateStatus);
         assertEquals(ParticipantStatus.IN_PROGRESS, newStatus);
+    }
+
+    void updateParticipantStatusTestShouldReturnFalse() {
+
+        casting.registerParticipant(participant);
+        boolean updateStatus = casting.updateParticipantStatus(null, ParticipantStatus.IN_PROGRESS);
+
+        assertFalse(updateStatus);
     }
 }
