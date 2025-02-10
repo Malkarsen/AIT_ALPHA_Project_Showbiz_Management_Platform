@@ -108,6 +108,19 @@
             <!-- Ограничение зависимости только для тестов -->
             <!-- Dependency scope limited to tests -->
         </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.36</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.2</version>
+        </dependency>
     </dependencies>
 
 </project>
