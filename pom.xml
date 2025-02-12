@@ -38,77 +38,7 @@
     </properties>
 
     <dependencies>
-        <!-- Секция для определения зависимостей проекта -->
-        <!-- Section for defining project dependencies -->
-
-        <!-- Logback -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <!-- Группа Logback -->
-            <!-- Logback group -->
-
-            <artifactId>logback-classic</artifactId>
-            <!-- Артефакт Logback для поддержки классического логгирования -->
-            <!-- Logback artifact for classic logging support -->
-
-            <version>1.2.3</version>
-            <!-- Версия Logback -->
-            <!-- Logback version -->
-        </dependency>
-
-        <!-- SLF4J API -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <!-- Группа SLF4J -->
-            <!-- SLF4J group -->
-
-            <artifactId>slf4j-api</artifactId>
-            <!-- Артефакт SLF4J API для абстракции логгирования -->
-            <!-- SLF4J API artifact for logging abstraction -->
-
-            <version>1.7.30</version>
-            <!-- Версия SLF4J API -->
-            <!-- SLF4J API version -->
-        </dependency>
-
-        <!-- JUnit Jupiter Engine -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <!-- Группа JUnit Jupiter -->
-            <!-- JUnit Jupiter group -->
-
-            <artifactId>junit-jupiter-engine</artifactId>
-            <!-- Артефакт для выполнения тестов JUnit -->
-            <!-- Artifact for executing JUnit tests -->
-
-            <version>5.10.3</version>
-            <!-- Версия JUnit Jupiter -->
-            <!-- JUnit Jupiter version -->
-
-            <scope>test</scope>
-            <!-- Ограничение зависимости только для тестов -->
-            <!-- Dependency scope limited to tests -->
-        </dependency>
-
-        <!-- JUnit Jupiter Params -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <!-- Группа JUnit Jupiter -->
-            <!-- JUnit Jupiter group -->
-
-            <artifactId>junit-jupiter-params</artifactId>
-            <!-- Артефакт для параметризированных тестов JUnit -->
-            <!-- Artifact for parameterized JUnit tests -->
-
-            <version>5.10.3</version>
-            <!-- Версия JUnit Jupiter -->
-            <!-- JUnit Jupiter version -->
-
-            <scope>test</scope>
-            <!-- Ограничение зависимости только для тестов -->
-            <!-- Dependency scope limited to tests -->
-        </dependency>
-
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -116,6 +46,44 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- SLF4J API -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.9</version>
+        </dependency>
+
+        <!-- Logback (SLF4J Implementation) -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.11</version>
+        </dependency>
+
+        <!-- JUnit Jupiter Engine -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.10.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JUnit Jupiter Params -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.10.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JUnit Jupiter API -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.10.3</version>
+        </dependency>
+
+        <!-- JavaFaker -->
         <dependency>
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>

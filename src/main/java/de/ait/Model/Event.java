@@ -1,7 +1,8 @@
 package de.ait.Model;
 
-import lombok.AllArgsConstructor;
+import de.ait.Utilities.EventType;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
@@ -16,12 +17,12 @@ import java.util.UUID;
  * цену за один билет на данное мероприятие и список артистов
  */
 @Slf4j
-@AllArgsConstructor
 @Getter
+@Setter
 public class Event {
     private String id; // уникальный идентификатор
     private String name; // название
-    private String eventType; // тип события
+    private EventType eventType; // тип события
     private LocalDate date; // дата
     private String location; // место проведения
     private int totalTicketCount; // количество билетов
@@ -30,7 +31,7 @@ public class Event {
     HashSet<String> artistList; // список артистов (String - имя артиста)
 
     /**
-     * Создается новый объект события, если ещё не продано ни одного билета
+     * Создается новый объект события, если ещё не продано ни одного билета и не известны артисты
      * Уникальный идентификатор задается с помощью UUID (Universally Unique Identifier)
      * @param name              Название
      * @param eventType         Тип события
@@ -40,7 +41,7 @@ public class Event {
      * @param ticketPrice       Цена одного билета
      */
     public Event(String name,
-                 String eventType,
+                 EventType eventType,
                  LocalDate date,
                  String location,
                  int totalTicketCount,
@@ -57,7 +58,7 @@ public class Event {
     }
 
     /**
-     * Создается новый объект события, когда известно количество проданных билетов
+     * Создается новый объект события, когда известно количество проданных билетов и не известен список артистов
      * Уникальный идентификатор задается с помощью UUID (Universally Unique Identifier)
      * @param name              Название
      * @param eventType         Тип события
@@ -68,7 +69,7 @@ public class Event {
      * @param ticketPrice       Цена одного билета
      */
     public Event(String name,
-                 String eventType,
+                 EventType eventType,
                  LocalDate date,
                  String location,
                  int totalTicketCount,
@@ -83,6 +84,37 @@ public class Event {
         this.soldTicketCount = soldTicketCount;
         this.ticketPrice = ticketPrice;
         this.artistList = new HashSet<>();
+    }
+
+    /**
+     * Создается новый объект события, когда все данные известны
+     * Уникальный идентификатор задается с помощью UUID (Universally Unique Identifier)
+     * @param name              Название
+     * @param eventType         Тип события
+     * @param date              Дата
+     * @param location          Место проведения
+     * @param totalTicketCount  Количество билетов
+     * @param soldTicketCount   Количество проданных билетов
+     * @param ticketPrice       Цена одного билета
+     * @param artistList        Список артистов
+     */
+    public Event(String name,
+                 EventType eventType,
+                 LocalDate date,
+                 String location,
+                 int totalTicketCount,
+                 int soldTicketCount,
+                 double ticketPrice,
+                 HashSet<String> artistList) {
+        this.id = UUID.randomUUID().toString(); // Генерация уникального идентификатора
+        this.name = name;
+        this.eventType = eventType;
+        this.date = date;
+        this.location = location;
+        this.totalTicketCount = totalTicketCount;
+        this.soldTicketCount = soldTicketCount;
+        this.ticketPrice = ticketPrice;
+        this.artistList = artistList;
     }
 
     /**
@@ -146,11 +178,10 @@ public class Event {
 
     /**
      * Метод расчёта прибыли на основе цены билета и затрат
-     * @param income     Доходы
      * @param expenses   Расходы
      * @return           Чистая прибыль (значение меньше нуля - убыток)
      */
-    public double calculateProfit(double income, double expenses) {
+    public double calculateProfit(double expenses) {
         double totalIncome = soldTicketCount * ticketPrice; // Общий доход от продажи билетов
         double profit = totalIncome - expenses;
         if (profit > 0) {

@@ -67,7 +67,7 @@ public class EventManager {
             log.error("Некорректное имя: Имя не может быть пустым или равным нулю");
             throw new IllegalArgumentException(
                     "Некорректное имя: Имя не может быть пустым или равным нулю");
-        } else if (event.getEventType() == null || event.getEventType().isEmpty()) {
+        } else if (event.getEventType() == null) {
             log.error("Некорректный тип события: Тип события не может быть пустым или равным нулю");
             throw new IllegalArgumentException(
                     "Некорректный тип события: Тип события не может быть пустым или равным нулю");
@@ -118,7 +118,7 @@ public class EventManager {
             log.error("Некорректное имя: Имя не может быть пустым или равным нулю");
             throw new IllegalArgumentException(
                     "Некорректное имя: Имя не может быть пустым или равным нулю");
-        } else if (event.getEventType() == null || event.getEventType().isEmpty()) {
+        } else if (event.getEventType() == null) {
             log.error("Некорректный тип события: Тип события не может быть пустым или равным нулю");
             throw new IllegalArgumentException(
                     "Некорректный тип события: Тип события не может быть пустым или равным нулю");
@@ -188,6 +188,5 @@ public class EventManager {
                 System.out.println(event);
             }
         }
-
     }
 }
