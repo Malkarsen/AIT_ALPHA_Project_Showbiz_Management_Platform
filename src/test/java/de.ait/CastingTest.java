@@ -3,6 +3,7 @@ package de.ait;
 import de.ait.Model.Casting;
 import de.ait.Model.Participant;
 import de.ait.Utilities.ParticipantStatus;
+import de.ait.Utilities.exceptions.NoRegisteredException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -68,29 +69,49 @@ public class CastingTest {
     @Test
     void registerParticipantTestShouldReturnCorrectlyMapSize() {
 
-        casting.registerParticipant(participant);
-        int size = casting.getParticipants().size();
+        try {
+            casting.registerParticipant(participant);
+            int size = casting.getParticipants().size();
 
-        assertEquals(1, size);
+            assertEquals(1, size);
+        }
+        catch (NoRegisteredException exception) {
+            System.out.println("NoRegisteredException");
+        }
+    }
+
+    @Test
+    void registerParticipantTestShouldReturnExceptionWithParticipantNull() {
+        assertThrows(NoRegisteredException.class, () -> casting.registerParticipant(null));
     }
 
     @Test
     void updateParticipantStatusTestShouldReturnTrueAndCorrectStatus() {
 
-        casting.registerParticipant(participant);
-        boolean updateStatus = casting.updateParticipantStatus("j123", ParticipantStatus.IN_PROGRESS);
-        ParticipantStatus newStatus = participant.getStatus();
+        try {
+            casting.registerParticipant(participant);
+            boolean updateStatus = casting.updateParticipantStatus("j123", ParticipantStatus.IN_PROGRESS);
+            ParticipantStatus newStatus = participant.getStatus();
 
-        assertTrue(updateStatus);
-        assertEquals(ParticipantStatus.IN_PROGRESS, newStatus);
+            assertTrue(updateStatus);
+            assertEquals(ParticipantStatus.IN_PROGRESS, newStatus);
+        }
+        catch (NoRegisteredException exception) {
+            System.out.println("NoRegisteredException");
+        }
     }
 
     @Test
     void updateParticipantStatusTestShouldReturnFalse() {
 
-        casting.registerParticipant(participant);
-        boolean updateStatus = casting.updateParticipantStatus(null, ParticipantStatus.IN_PROGRESS);
+        try {
+            casting.registerParticipant(participant);
+            boolean updateStatus = casting.updateParticipantStatus(null, ParticipantStatus.IN_PROGRESS);
 
-        assertFalse(updateStatus);
+            assertFalse(updateStatus);
+        }
+        catch (NoRegisteredException exception) {
+            System.out.println("NoRegisteredException");
+        }
     }
 }

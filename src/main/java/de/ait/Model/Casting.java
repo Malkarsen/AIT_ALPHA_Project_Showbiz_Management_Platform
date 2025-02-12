@@ -1,6 +1,7 @@
 package de.ait.Model;
 
 import de.ait.Utilities.ParticipantStatus;
+import de.ait.Utilities.exceptions.NoRegisteredException;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -85,10 +86,11 @@ public class Casting {
      *
      * @param participant участник для регистрации / the participant to register
      */
-    public void registerParticipant(Participant participant) {
+    public void registerParticipant(Participant participant) throws NoRegisteredException{
         if (participant == null) {
             System.out.println("Participant is null");
             log.warn("attempt to registered null");
+            throw new NoRegisteredException("Participant is null");
         }
         else {
             this.participants.put(participant.getId(), participant);
