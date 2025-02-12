@@ -2,18 +2,17 @@ package de.ait.Core;
 
 import de.ait.Model.Contract;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 /**
  * Класс ContractManager управляет списком контрактов.
  * Предоставляет методы для добавления, отображения и проверки контрактов.
  */
-
 public class ContractManager {
-
-    private List<Contract> contracts; // Коллекция для хранения контрактов
+    private final List<Contract> contracts; // // Используем final, так как коллекция не будет меняться
 
     /**
      * Конструктор для создания нового менеджера контрактов.
@@ -31,8 +30,7 @@ public class ContractManager {
      */
     public void addContract(Contract contract) {
         if (contract == null) {
-            System.out.println("Ошибка: Невозможно добавить пустой контракт.");
-            return;
+            throw new IllegalArgumentException("Ошибка: Невозможно добавить пустой контракт.");
         }
         contracts.add(contract);
         System.out.println("Контракт добавлен: " + contract.getId());
@@ -59,7 +57,7 @@ public class ContractManager {
      * @return список контрактов.
      */
     public List<Contract> getContracts() {
-        return contracts;
+        return new ArrayList<>(contracts); // Возвращаем копию списка для защиты от внешних изменений
     }
 
     /**
@@ -68,28 +66,20 @@ public class ContractManager {
      * Если таких контрактов нет, выводится соответствующее сообщение.
      */
     public void checkExpiringContracts() {
-        if (contracts.isEmpty()) {
-            System.out.println("Список контрактов пуст. Нечего проверять.");
-            return;
-        }
-
         LocalDate today = LocalDate.now();
-        LocalDate threshold = today.plusDays(30); // Дата через 30 дней
+        LocalDate threshold = today.plusDays(30);
 
-        System.out.println("Контракты, срок действия которых истекает в ближайшие 30 дней:");
-        boolean found = false;
+        List<Contract> expiringContracts = contracts.stream()
+                .filter(contract -> contract.getEndDate() != null &&
+                        !contract.getEndDate().isBefore(today) &&
+                        contract.getEndDate().isBefore(threshold))
+                .collect(Collectors.toList());
 
-        // Перебираем контракты с помощью обычного цикла
-        for (Contract contract : contracts) {
-            LocalDate endDate = contract.getEndDate();
-            if (!endDate.isBefore(today) && endDate.isBefore(threshold)) {
-                System.out.println(contract);
-                found = true;
-            }
-        }
-
-        if (!found) {
+        if (expiringContracts.isEmpty()) {
             System.out.println("Нет контрактов, срок действия которых истекает в ближайшие 30 дней.");
+        } else {
+            System.out.println("Контракты, срок действия которых истекает в ближайшие 30 дней:");
+            expiringContracts.forEach(System.out::println);
         }
     }
 

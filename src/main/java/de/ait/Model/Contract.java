@@ -10,8 +10,7 @@ import java.util.UUID;
  */
 
 public class Contract {
-
-    private String id; // Уникальный идентификатор
+    private final String id; // Уникальный идентификатор, final так как id не меняется
     private String artistName;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -26,18 +25,9 @@ public class Contract {
      * @param terms      условия контракта.
      */
     public Contract(String artistName, LocalDate startDate, LocalDate endDate, String terms) {
-        if (artistName == null || artistName.isEmpty()) {
-            System.out.println("Ошибка: Имя артиста не может быть пустым.");
-            return; // Прекращение выполнение конструктора
-        }
-        if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
-            System.err.println("Ошибка: Даты некорректны.");
-            return;
-        }
-        if (terms == null || terms.isEmpty()) {
-            System.err.println("Ошибка: Условия не могут быть пустыми.");
-            return;
-        }
+        validateArtistName(artistName);
+        validateDates(startDate, endDate);
+        validateTerms(terms);
 
         this.id = UUID.randomUUID().toString(); // Генерация уникального идентификатора
         this.artistName = artistName;
@@ -70,10 +60,7 @@ public class Contract {
      * @param artistName новое имя артиста.
      */
     public void setArtistName(String artistName) {
-        if (artistName == null || artistName.isEmpty()) {
-            System.err.println("Ошибка: Имя артиста не может быть пустым.");
-            return;
-        }
+        validateArtistName(artistName);
         this.artistName = artistName;
     }
 
@@ -92,10 +79,7 @@ public class Contract {
      * @param startDate новая дата начала контракта.
      */
     public void setStartDate(LocalDate startDate) {
-        if (startDate == null || startDate.isAfter(this.endDate)) {
-            System.err.println("Ошибка: Дата начала некорректна.");
-            return;
-        }
+        validateDates(startDate, this.endDate);
         this.startDate = startDate;
     }
 
@@ -114,10 +98,7 @@ public class Contract {
      * @param endDate новая дата окончания контракта.
      */
     public void setEndDate(LocalDate endDate) {
-        if (endDate == null || endDate.isBefore(this.startDate)) {
-            System.err.println("Ошибка: Дата окончания некорректна.");
-            return;
-        }
+        validateDates(this.startDate, endDate);
         this.endDate = endDate;
     }
 
@@ -136,11 +117,30 @@ public class Contract {
      * @param terms новые условия контракта.
      */
     public void setTerms(String terms) {
-        if (terms == null || terms.isEmpty()) {
-            System.err.println("Ошибка: Условия не могут быть пустыми.");
-            return;
-        }
+        validateTerms(terms);
         this.terms = terms;
+    }
+
+    ///  *** Методы проверки ***
+    private void validateArtistName(String artistName) {
+        if (artistName == null || artistName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Ошибка: Имя артиста не может быть пустым.");
+        }
+    }
+
+    private void validateDates(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException("Ошибка: Даты не могут быть null.");
+        }
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("Ошибка: Дата начала не может быть позже даты окончания.");
+        }
+    }
+
+    private void validateTerms(String terms) {
+        if (terms == null || terms.trim().isEmpty()) {
+            throw new IllegalArgumentException("Ошибка: Условия контракта не могут быть пустыми.");
+        }
     }
 
     /**
@@ -149,8 +149,11 @@ public class Contract {
      * @return true, если контракт активен, иначе false.
      */
     public boolean isActive() {
+        if (startDate == null || endDate == null) {
+            return false;
+        }
         LocalDate today = LocalDate.now();
-        return (today.isAfter(startDate) || today.isEqual(startDate)) && (today.isBefore(endDate) || today.isEqual(endDate));
+        return !today.isBefore(startDate) && !today.isAfter(endDate);
     }
 
     /**
@@ -159,6 +162,9 @@ public class Contract {
      * @return количество дней до истечения контракта.
      */
     public long daysUntilExpiration() {
+        if (endDate == null) {
+            return -1; // Ошибка, если дата не установлена
+        }
         return LocalDate.now().until(endDate).getDays();
     }
 
