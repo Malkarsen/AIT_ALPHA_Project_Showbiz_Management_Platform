@@ -1,7 +1,7 @@
 package de.ait;
 
 import de.ait.Model.Participant;
-import de.ait.Model.ParticipantStatus;
+import de.ait.Utilities.ParticipantStatus;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

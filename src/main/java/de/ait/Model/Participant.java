@@ -1,5 +1,6 @@
 package de.ait.Model;
 
+import de.ait.Utilities.ParticipantStatus;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;

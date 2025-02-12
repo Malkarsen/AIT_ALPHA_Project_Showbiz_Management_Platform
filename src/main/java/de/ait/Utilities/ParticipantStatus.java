@@ -1,4 +1,4 @@
-package de.ait.Model;
+package de.ait.Utilities;
 
 public enum ParticipantStatus {
     NEW,
