@@ -114,7 +114,7 @@ public class CastingManagerApp {
         String description = scanner.nextLine().trim();
         System.out.println("Enter Casting location: ");
         String location = scanner.nextLine().trim();
-        System.out.println("Enter Casting date: ");
+        System.out.println("Enter Casting date(dd.MM.yyyy): ");
         String userCastingDate = scanner.nextLine().trim();
         DateTimeFormatter formatterUser = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate castingDate = LocalDate.parse(userCastingDate, formatterUser);

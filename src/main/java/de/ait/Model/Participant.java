@@ -55,12 +55,4 @@ public class Participant {
         this.status = status;
     }
 
-    /**
-     * Устанавливает новый статус участника.
-     *
-     * @param status Новый статус
-     */
-    public void setStatus(ParticipantStatus status) {
-        this.status = status;
-    }
 }
