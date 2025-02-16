@@ -79,7 +79,7 @@ public class CastingManager {
      *
      * Prints a list of all registered castings to the console.
      */
-    private void showCastings() {
+    public void showCastings() {
         for (Map.Entry<String, Casting> entry : castings.entrySet()) {
             System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
         }

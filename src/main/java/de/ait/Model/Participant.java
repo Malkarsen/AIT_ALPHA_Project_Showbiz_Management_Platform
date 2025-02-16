@@ -2,6 +2,7 @@ package de.ait.Model;
 
 import de.ait.Utilities.ParticipantStatus;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Getter
+@Setter
 @ToString
 public class Participant {
     /** Уникальный идентификатор участника */
@@ -22,6 +24,7 @@ public class Participant {
     /** Статус участника */
     private ParticipantStatus status;
 
+
     /**
      * Создает новый объект участника.
      *
@@ -29,6 +32,8 @@ public class Participant {
      * @param name   Имя участника
      * @param status Статус участника
      */
+
+
     public Participant(String id, String name, ParticipantStatus status) {
         if (id == null || id.isEmpty()) {
             System.out.println("Incorrect participant id");
