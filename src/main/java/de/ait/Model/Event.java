@@ -209,6 +209,10 @@ public class Event {
         System.out.println("Количество билетов: " + totalTicketCount);
         System.out.println("Продано билетов: " + soldTicketCount);
         System.out.println("Осталось билетов: " + (totalTicketCount - soldTicketCount));
-        System.out.println("Список артистов: " + artistList);
+        if (artistList.isEmpty()) {
+            System.out.println("Список артистов: пуст");
+        } else {
+            System.out.println("Список артистов: " + artistList);
+        }
     }
 }

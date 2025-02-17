@@ -38,11 +38,7 @@ public class EventManager {
      * @throws EventIsNotInListException Если событие с таким идентификатором не найдено в списке
      */
     public Event getEventById(String eventId) throws EventIsNotInListException {
-        if (eventId == null || eventId.isEmpty()) {
-            log.error("Некорректный уникальный идентификатор: Id не может быть пустым или равным нулю");
-            throw new IllegalArgumentException(
-                    "Некорректный уникальный идентификатор: Id не может быть пустым или равным нулю");
-        } else if (!events.containsKey(eventId)){
+        if (!events.containsKey(eventId)){
             log.error("Ошибка! Данного события нет в списке");
             throw new EventIsNotInListException("Ошибка! Данного события нет в списке");
         } else {
@@ -55,14 +51,10 @@ public class EventManager {
      * @param event Событие для добавления
      * @throws EventAlreadyInListException Если событие с таким идентификатором уже есть в списке
      */
-    public void addEvent(Event event) throws EventAlreadyInListException {
+    public String addEvent(Event event) throws EventAlreadyInListException {
         if (event == null) {
             log.error("Ошибка! Событие равно нулю");
             throw new IllegalArgumentException("Ошибка! Событие равно нулю");
-        } else if (event.getId() == null || event.getId().isEmpty()) {
-            log.error("Некорректный уникальный идентификатор: Id не может быть пустым или равным нулю");
-            throw new IllegalArgumentException(
-                    "Некорректный уникальный идентификатор: Id не может быть пустым или равным нулю");
         } else if (event.getName() == null || event.getName().isEmpty()) {
             log.error("Некорректное имя: Имя не может быть пустым или равным нулю");
             throw new IllegalArgumentException(
@@ -83,14 +75,10 @@ public class EventManager {
             log.error("Некорректное количество билетов: Количество билетов не может быть меньше или равным нулю");
             throw new IllegalArgumentException(
                     "Некорректное количество билетов: Количество билетов не может быть меньше или равным нулю");
-        } else if (event.getTicketPrice() <= 0) {
-            log.error("Некорректная цена билета: Цена билета не может быть меньше или равной нулю");
+        } else if (event.getTicketPrice() < 0) {
+            log.error("Некорректная цена билета: Цена билета не может быть меньше нуля");
             throw new IllegalArgumentException(
-                    "Некорректная цена билета: Цена билета не может быть меньше или равной нулю");
-        } else if (event.getArtistList() == null || event.getArtistList().isEmpty())  {
-            log.error("Некорректный список исполнителей: Список исполнителей не может быть пустым или равным нулю");
-            throw new IllegalArgumentException(
-                    "Некорректный список исполнителей: Список исполнителей не может быть пустым или равным нулю");
+                    "Некорректная цена билета: Цена билета не может быть меньше нуля");
         } else if (events.containsKey(event.getId())){
             log.error("Ошибка! Данное событие уже есть в списке");
             throw new EventAlreadyInListException("Ошибка! Данное событие уже есть в списке");
@@ -98,6 +86,7 @@ public class EventManager {
             events.put(event.getId(), event);
             log.info("Событие {} с Id {} добавлено в список", event.getName(), event.getId());
             System.out.println("Событие " + event.getName() + " с Id " + event.getId() + " добавлено в список ");
+            return event.getId();
         }
     }
 
@@ -110,10 +99,6 @@ public class EventManager {
         if (event == null) {
             log.error("Ошибка! Событие равно нулю");
             throw new IllegalArgumentException("Ошибка! Событие равно нулю");
-        } else if (event.getId() == null || event.getId().isEmpty()) {
-            log.error("Некорректный уникальный идентификатор: Id не может быть пустым или равным нулю");
-            throw new IllegalArgumentException(
-                    "Некорректный уникальный идентификатор: Id не может быть пустым или равным нулю");
         } else if (event.getName() == null || event.getName().isEmpty()) {
             log.error("Некорректное имя: Имя не может быть пустым или равным нулю");
             throw new IllegalArgumentException(
@@ -134,14 +119,10 @@ public class EventManager {
             log.error("Некорректное количество билетов: Количество билетов не может быть меньше или равным нулю");
             throw new IllegalArgumentException(
                     "Некорректное количество билетов: Количество билетов не может быть меньше или равным нулю");
-        } else if (event.getTicketPrice() <= 0) {
-            log.error("Некорректная цена билета: Цена билета не может быть меньше или равной нулю");
+        } else if (event.getTicketPrice() < 0) {
+            log.error("Некорректная цена билета: Цена билета не может быть меньше нуля");
             throw new IllegalArgumentException(
-                    "Некорректная цена билета: Цена билета не может быть меньше или равной нулю");
-        } else if (event.getArtistList() == null || event.getArtistList().isEmpty())  {
-            log.error("Некорректный список исполнителей: Список исполнителей не может быть пустым или равным нулю");
-            throw new IllegalArgumentException(
-                    "Некорректный список исполнителей: Список исполнителей не может быть пустым или равным нулю");
+                    "Некорректная цена билета: Цена билета не может быть меньше нуля");
         } else if (!events.containsKey(event.getId())){
             log.error("Ошибка! Данного события нет в списке");
             throw new EventIsNotInListException("Ошибка! Данного события нет в списке");
@@ -158,11 +139,7 @@ public class EventManager {
      * @throws EventIsNotInListException Если событие с таким идентификатором не найдено в списке
      */
     public void removeEventById(String eventId) throws EventIsNotInListException {
-        if (eventId == null || eventId.isEmpty()) {
-            log.error("Некорректный уникальный идентификатор: Id не может быть пустым или равным нулю");
-            throw new IllegalArgumentException(
-                    "Некорректный уникальный идентификатор: Id не может быть пустым или равным нулю");
-        } else if (!events.containsKey(eventId)){
+        if (!events.containsKey(eventId)){
             log.error("Ошибка! Данного события нет в списке");
             throw new EventIsNotInListException("Ошибка! Данного события нет в списке");
         } else {
@@ -185,7 +162,7 @@ public class EventManager {
             for (Event event : events.values()) {
                 System.out.println("--------------------------------");
                 System.out.println("Событие "+ count);
-                System.out.println(event);
+                event.printEventInfo();
             }
         }
     }
