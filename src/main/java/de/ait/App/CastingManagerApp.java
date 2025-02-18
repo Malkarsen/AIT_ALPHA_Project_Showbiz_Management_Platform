@@ -7,15 +7,17 @@ import de.ait.Utilities.ParticipantStatus;
 import de.ait.Utilities.exceptions.NoRegisteredException;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 @Slf4j
 
 public class CastingManagerApp {
-    static Scanner scanner = new Scanner(System.in);
-    static CastingManager manager = new CastingManager();
-    static Casting casting;
+    private static Scanner scanner = new Scanner(System.in);
+    private static CastingManager manager = new CastingManager();
+    private static Casting casting;
+    private static boolean runCasting;
 
     public static void main(String[] args) throws NoRegisteredException {
         byte choice = 0;
@@ -25,11 +27,17 @@ public class CastingManagerApp {
             choice = scanner.nextByte();
             switch (choice) {
                 case 1 -> {
-                    casting = buildCasting();
-                    manager.registerCasting(casting);
+                    try {
+                        casting = buildCasting();
+                        manager.registerCasting(casting);
+                    }
+                    catch (DateTimeException exception) {
+                        System.out.println("Date is null or in illegal format!");
+                        log.error("Date is null or in illegal format!");
+                    }
                 }
                 case 2 -> {
-                    boolean runCasting = true;
+                    runCasting = true;
                     byte choiceCasting;
                     casting = acceptToFindCasting();
                     while (runCasting) {
@@ -99,7 +107,6 @@ public class CastingManagerApp {
             log.error("Failed participant creation");
         }
 
-
         return participant;
     }
 
@@ -139,7 +146,14 @@ public class CastingManagerApp {
         System.out.println("Enter new status(NEW, IN_PROGRESS, REJECTED_CANDIDATE, APPROVED_CANDIDATE): ");
         String newStatus = scanner.nextLine().trim();
 
-        casting.updateParticipantStatus(participantId, ParticipantStatus.valueOf(newStatus));
+        try {
+            casting.updateParticipantStatus(participantId, ParticipantStatus.valueOf(newStatus));
+        }
+        catch (IllegalArgumentException exception) {
+            System.out.println("New status is null \n");
+            log.error("attempt enter incorrect status");
+
+        }
     }
 
     private static Casting acceptToFindCasting() {
@@ -148,6 +162,11 @@ public class CastingManagerApp {
         System.out.println("Enter Casting Id: ");
         String castingId = scanner.nextLine().trim();
         casting = manager.findCasting(castingId);
+
+        if (casting == null) {
+            System.out.println("No casting found with such id");
+            runCasting = false;
+        }
         return casting;
     }
 
