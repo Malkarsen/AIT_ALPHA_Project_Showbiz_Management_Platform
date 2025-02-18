@@ -115,7 +115,7 @@ public class Casting {
         if (participantId == null || participantId.isEmpty() || newStatus == null) {
             System.out.println("Participant or new status is null");
             log.error("Status update is not possible. Participant: {}, Status: {}", participantId, newStatus);
-            return false;
+            throw new IllegalArgumentException("new status is null");
         } else {
             if (participants.containsKey(participantId)) {
                 Participant participant = this.participants.get(participantId);
