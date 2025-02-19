@@ -66,9 +66,9 @@ public class Casting {
             throw new IllegalArgumentException("Incorrect Casting location");
         }
         if (castingDate == null) {
-            System.out.println("Incorrect Casting location");
-            log.error("Incorrect Casting location");
-            throw new IllegalArgumentException("Incorrect Casting location");
+            System.out.println("Incorrect Casting date");
+            log.error("Incorrect Casting date");
+            throw new IllegalArgumentException("Incorrect Casting date");
         }
         this.id = id;
         this.name = name;
