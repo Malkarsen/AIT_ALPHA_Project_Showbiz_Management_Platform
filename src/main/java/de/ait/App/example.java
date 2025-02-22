@@ -1,4 +1,8 @@
+/*
 package de.ait.App;
+
+
+import de.ait.Core.ContractManager;
 
 import java.time.LocalDate;
 
@@ -32,3 +36,5 @@ public class example {
         manager.notifyExpiringContracts();
     }
 }
+*/
+
