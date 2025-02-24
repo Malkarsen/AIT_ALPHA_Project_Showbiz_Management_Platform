@@ -33,28 +33,20 @@ public class FinanceManagerApp {
             sc.nextLine(); // Clear buffer after nextInt()
 
             switch (choice) {
-                case 1:
-                    addRecord();
-                    break;
-                case 2:
-                    displayAllRecords();
-                    break;
-                case 3:
-                    calculateBalance();
-                    break;
-                case 4:
-                    saveRecordsToFile();
-                    break;
-                case 5:
-                    loadRecordsFromFile();
-                    break;
-                case 6:
+                case 1 -> addRecord();
+                case 2 -> displayAllRecords();
+                case 3 -> calculateBalance();
+                case 4 -> saveRecordsToFile();
+                case 5 -> loadRecordsFromFile();
+                case 6 -> {
                     running = false;
+                    log.info("Program terminated by user.");
                     System.out.println("Exiting the program.");
-                    break;
-                default:
+                }
+                default -> {
                     log.warn("Invalid choice. Please try again.");
                     System.out.println("Invalid choice. Please try again.");
+                }
             }
         }
         sc.close();
@@ -146,8 +138,9 @@ public class FinanceManagerApp {
     }
 
     private void saveRecordsToFile() {
-        System.out.print("Enter file name to save: ");
-        String fileName = sc.nextLine();
+
+        String fileName = "Finance record.txt";
+        System.out.print("Save records to file: " + fileName);
         try {
             financeManager.saveRecordsToFile(fileName);
             System.out.println("Records successfully saved to file: " + fileName);
@@ -158,8 +151,9 @@ public class FinanceManagerApp {
     }
 
     private void loadRecordsFromFile() {
-        System.out.print("Enter file name to load: ");
-        String fileName = sc.nextLine();
+
+        String fileName = "Finance record.txt";
+        System.out.print("Load records to file: " + fileName);
         try {
             financeManager.loadRecordsFromFile(fileName);
             System.out.println("Records successfully loaded from file: " + fileName);
