@@ -1,153 +1,165 @@
 package de.ait.model;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 /**
- * Класс Contract представляет собой контракт с артистом.
- * Он содержит информацию о контракте, включая имя артиста, даты начала и окончания,
- * условия и уникальный идентификатор контракта.
+ * The Contract class represents an agreement with an artist.
+ * It contains contract details, including the artist's name, start and end dates,
+ * contract terms, and a unique contract identifier.
  */
-
+@Slf4j
 public class Contract {
-    private final String id; // Уникальный идентификатор, final так как id не меняется
+    private final String id; // Unique identifier, final because it does not change
     private String artistName;
     private LocalDate startDate;
     private LocalDate endDate;
     private String terms;
 
     /**
-     * Конструктор для создания нового контракта.
+     * Constructor for creating a new contract.
      *
-     * @param artistName имя артиста.
-     * @param startDate  дата начала контракта.
-     * @param endDate    дата окончания контракта.
-     * @param terms      условия контракта.
+     * @param artistName name of the artist.
+     * @param startDate  contract start date.
+     * @param endDate    contract end date.
+     * @param terms      contract terms.
      */
     public Contract(String artistName, LocalDate startDate, LocalDate endDate, String terms) {
         validateArtistName(artistName);
         validateDates(startDate, endDate);
         validateTerms(terms);
 
-        this.id = UUID.randomUUID().toString(); // Генерация уникального идентификатора
+        this.id = UUID.randomUUID().toString(); // Generate a unique identifier
         this.artistName = artistName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.terms = terms;
+
+        log.info("New contract created: {}", this);
     }
 
     /**
-     * Получение уникального идентификатора контракта.
+     * Get the unique contract identifier.
      *
-     * @return уникальный идентификатор контракта.
+     * @return contract ID.
      */
     public String getId() {
         return id;
     }
 
     /**
-     * Получение имени артиста.
+     * Get the artist's name.
      *
-     * @return имя артиста.
+     * @return artist name.
      */
     public String getArtistName() {
         return artistName;
     }
 
     /**
-     * Задать имя артиста.
+     * Set a new artist name.
      *
-     * @param artistName новое имя артиста.
+     * @param artistName new artist name.
      */
     public void setArtistName(String artistName) {
         validateArtistName(artistName);
         this.artistName = artistName;
+        log.info("Updated artist name for contract {}: {}", id, artistName);
     }
 
     /**
-     * Получение даты начала контракта.
+     * Get the contract start date.
      *
-     * @return дата начала контракта.
+     * @return start date.
      */
     public LocalDate getStartDate() {
         return startDate;
     }
 
     /**
-     * Задать дату начала контракта.
+     * Set a new contract start date.
      *
-     * @param startDate новая дата начала контракта.
+     * @param startDate new start date.
      */
     public void setStartDate(LocalDate startDate) {
         validateDates(startDate, this.endDate);
         this.startDate = startDate;
+        log.info("Updated start date for contract {}: {}", id, startDate);
     }
 
     /**
-     * Получение даты окончания контракта.
+     * Get the contract end date.
      *
-     * @return дата окончания контракта.
+     * @return end date.
      */
     public LocalDate getEndDate() {
         return endDate;
     }
 
     /**
-     * Задать дату окончания контракта.
+     * Set a new contract end date.
      *
-     * @param endDate новая дата окончания контракта.
+     * @param endDate new end date.
      */
     public void setEndDate(LocalDate endDate) {
         validateDates(this.startDate, endDate);
         this.endDate = endDate;
+        log.info("Updated end date for contract {}: {}", id, endDate);
     }
 
     /**
-     * Получение условий контракта.
+     * Get the contract terms.
      *
-     * @return условия контракта.
+     * @return contract terms.
      */
     public String getTerms() {
         return terms;
     }
 
     /**
-     * Описать условия контракта.
+     * Set new contract terms.
      *
-     * @param terms новые условия контракта.
+     * @param terms new contract terms.
      */
     public void setTerms(String terms) {
         validateTerms(terms);
         this.terms = terms;
+        log.info("Updated terms for contract {}: {}", id, terms);
     }
 
-    ///  *** Методы проверки ***
+    // *** Validation Methods ***
     private void validateArtistName(String artistName) {
         if (artistName == null || artistName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Ошибка: Имя артиста не может быть пустым.");
+            log.error("Validation error: Artist name cannot be empty.");
+            throw new IllegalArgumentException("Error: Artist name cannot be empty.");
         }
     }
 
     private void validateDates(LocalDate startDate, LocalDate endDate) {
         if (startDate == null || endDate == null) {
-            throw new IllegalArgumentException("Ошибка: Даты не могут быть null.");
+            log.error("Validation error: Dates cannot be null.");
+            throw new IllegalArgumentException("Error: Dates cannot be null.");
         }
         if (startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("Ошибка: Дата начала не может быть позже даты окончания.");
+            log.error("Validation error: Start date cannot be after the end date.");
+            throw new IllegalArgumentException("Error: Start date cannot be after the end date.");
         }
     }
 
     private void validateTerms(String terms) {
         if (terms == null || terms.trim().isEmpty()) {
-            throw new IllegalArgumentException("Ошибка: Условия контракта не могут быть пустыми.");
+            log.error("Validation error: Contract terms cannot be empty.");
+            throw new IllegalArgumentException("Error: Contract terms cannot be empty.");
         }
     }
 
     /**
-     * Проверка активности контракта на текущую дату.
+     * Checks if the contract is currently active.
      *
-     * @return true, если контракт активен, иначе false.
+     * @return true if the contract is active, otherwise false.
      */
     public boolean isActive() {
         if (startDate == null || endDate == null) {
@@ -158,28 +170,27 @@ public class Contract {
     }
 
     /**
-     * Вычисление количества дней до истечения контракта.
+     * Calculates the number of days until the contract expires.
      *
-     * @return количество дней до истечения контракта.
+     * @return the number of days until expiration.
      */
-
     public long daysUntilExpiration() {
         if (endDate == null) {
-            return -1; // Ошибка, если дата не установлена
+            return -1; // Error if the date is not set
         }
         LocalDate today = LocalDate.now();
         LocalDate start = this.startDate;
 
-        // Если контракт еще не начался, считаем разницу от startDate, а не от сегодня
+        // If the contract has not started yet, count from the start date instead of today
         LocalDate referenceDate = today.isBefore(start) ? start : today;
 
         return ChronoUnit.DAYS.between(referenceDate, endDate);
     }
 
     /**
-     * Отображение контракта в виде строки.
+     * Returns a string representation of the contract.
      *
-     * @return строковое представление контракта.
+     * @return contract details as a string.
      */
     @Override
     public String toString() {

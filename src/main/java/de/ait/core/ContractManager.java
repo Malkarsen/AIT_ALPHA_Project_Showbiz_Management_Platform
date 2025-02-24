@@ -1,6 +1,7 @@
 package de.ait.core;
 
 import de.ait.model.Contract;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,62 +9,62 @@ import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 /**
- * Класс ContractManager управляет списком контрактов.
- * Предоставляет методы для добавления, отображения и проверки контрактов.
+ * The ContractManager class manages a list of contracts.
+ * It provides methods for adding, displaying, and checking contracts.
  */
+@Slf4j
 public class ContractManager {
-    private final List<Contract> contracts; // // Используем final, так как коллекция не будет меняться
+    private final List<Contract> contracts; // Using final since the collection itself does not change
 
     /**
-     * Конструктор для создания нового менеджера контрактов.
-     * Инициализирует пустую коллекцию контрактов.
+     * Constructor for creating a new contract manager.
+     * Initializes an empty contract collection.
      */
     public ContractManager() {
         this.contracts = new ArrayList<>();
     }
 
     /**
-     * Добавляет новый контракт в список.
+     * Adds a new contract to the list.
      *
-     * @param contract контракт, который нужно добавить.
-     *                 Если переданный контракт равен null, выводится сообщение об ошибке.
+     * @param contract the contract to add.
+     *                 If the provided contract is null, an error message is logged, and an exception is thrown.
      */
     public void addContract(Contract contract) {
         if (contract == null) {
-            throw new IllegalArgumentException("Ошибка: Невозможно добавить пустой контракт.");
+            log.error("Error: Cannot add a null contract.");
+            throw new IllegalArgumentException("Error: Cannot add a null contract.");
         }
         contracts.add(contract);
-        System.out.println("Контракт добавлен: " + contract.getId());
+        log.info("Contract added: {}", contract.getId());
     }
 
     /**
-     * Отображает список всех контрактов.
-     * Если список пуст, выводится соответствующее сообщение.
+     * Displays a list of all contracts.
+     * If the list is empty, a corresponding message is displayed.
      */
     public void displayAllContracts() {
         if (contracts.isEmpty()) {
-            System.out.println("Список контрактов пуст.");
+            log.info("The contract list is empty.");
+            System.out.println("The contract list is empty.");
             return;
         }
-        System.out.println("Список всех контрактов:");
-        for (Contract contract : contracts) {
-            System.out.println(contract);
-        }
+        System.out.println("List of all contracts:");
+        contracts.forEach(System.out::println);
     }
 
     /**
-     * Возвращает список всех контрактов.
+     * Returns a list of all contracts.
      *
-     * @return список контрактов.
+     * @return a copy of the contract list to prevent external modifications.
      */
     public List<Contract> getContracts() {
-        return new ArrayList<>(contracts); // Возвращаем копию списка для защиты от внешних изменений
+        return new ArrayList<>(contracts);
     }
 
     /**
-     * Проверяет контракты, срок действия которых истекает в ближайшие 30 дней.
-     * Выводит список таких контрактов в консоль.
-     * Если таких контрактов нет, выводится соответствующее сообщение.
+     * Checks for contracts that are expiring within the next 30 days.
+     * Displays such contracts in the console. If none are found, an appropriate message is displayed.
      */
     public void checkExpiringContracts() {
         LocalDate today = LocalDate.now();
@@ -76,19 +77,22 @@ public class ContractManager {
                 .collect(Collectors.toList());
 
         if (expiringContracts.isEmpty()) {
-            System.out.println("Нет контрактов, срок действия которых истекает в ближайшие 30 дней.");
+            log.info("No contracts are expiring within the next 30 days.");
+            System.out.println("No contracts are expiring within the next 30 days.");
         } else {
-            System.out.println("Контракты, срок действия которых истекает в ближайшие 30 дней:");
+            log.info("Contracts expiring within the next 30 days: {}", expiringContracts.size());
+            System.out.println("Contracts expiring within the next 30 days:");
             expiringContracts.forEach(System.out::println);
         }
     }
 
     /**
-     * Уведомляет об истекающих контрактах при запуске программы.
-     * Вызывает метод {@link #checkExpiringContracts()} для выполнения проверки.
+     * Notifies about expiring contracts when the program starts.
+     * Calls {@link #checkExpiringContracts()} to perform the check.
      */
     public void notifyExpiringContracts() {
-        System.out.println("Проверка контрактов на истечение срока действия...");
+        log.info("Checking contracts for expiration...");
+        System.out.println("Checking contracts for expiration...");
         checkExpiringContracts();
     }
 }
