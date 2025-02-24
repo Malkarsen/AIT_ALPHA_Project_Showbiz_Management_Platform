@@ -28,12 +28,12 @@ public class ContractManagerApp {
                 case 3 -> manager.displayAllContracts();
                 case 4 -> {
                     runProgram = false;
-                    log.info("Программа завершена пользователем.");
-                    System.out.println("Выход из программы.");
+                    log.info("Program terminated by user.");
+                    System.out.println("Exiting the program.");
                 }
                 default -> {
-                    System.out.println("Некорректный ввод. Попробуйте снова.");
-                    log.warn("Попытка ввода некорректной команды в основном меню.");
+                    System.out.println("Invalid input. Please try again.");
+                    log.warn("Invalid command entered in the main menu.");
                 }
             }
         }
@@ -45,25 +45,25 @@ public class ContractManagerApp {
             if (contract != null) {
                 manager.addContract(contract);
             } else {
-                log.warn("Не удалось создать контракт из-за некорректных данных.");
+                log.warn("Failed to create contract due to invalid data.");
             }
         } catch (DateTimeException e) {
-            System.out.println("Ошибка: Неверный формат даты!");
-            log.error("Ошибка формата даты при создании контракта.");
+            System.out.println("Error: Invalid date format!");
+            log.error("Date format error when creating a contract.");
         } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка: Некорректные данные контракта!");
-            log.error("Ошибка создания контракта: {}", e.getMessage());
+            System.out.println("Error: Invalid contract data!");
+            log.error("Contract creation error: {}", e.getMessage());
         }
     }
 
     private static void manageExistingContract() {
-        System.out.println("Введите ID контракта для управления:");
+        System.out.println("Enter contract ID to manage:");
         String contractId = scanner.nextLine().trim();
         Contract contract = findContractById(contractId);
 
         if (contract == null) {
-            System.out.println("Контракт с таким ID не найден.");
-            log.warn("Попытка найти несуществующий контракт с ID {}", contractId);
+            System.out.println("No contract found with this ID.");
+            log.warn("Attempt to find a non-existent contract with ID {}", contractId);
             return;
         }
 
@@ -71,34 +71,34 @@ public class ContractManagerApp {
         while (runContractMenu) {
             showContractMenu();
             byte choice = scanner.nextByte();
-            scanner.nextLine(); // очистка буфера
+            scanner.nextLine(); // Clear buffer
 
             switch (choice) {
                 case 1 -> updateContractTerms(contract);
                 case 2 -> checkContractExpiration(contract);
                 case 3 -> {
                     runContractMenu = false;
-                    log.info("Выход из меню управления контрактом.");
-                    System.out.println("Выход из меню контракта.");
+                    log.info("Exiting contract management menu.");
+                    System.out.println("Exiting contract menu.");
                 }
                 default -> {
-                    System.out.println("Некорректный ввод. Попробуйте снова.");
-                    log.warn("Некорректный ввод в меню управления контрактом.");
+                    System.out.println("Invalid input. Please try again.");
+                    log.warn("Invalid input in contract management menu.");
                 }
             }
         }
     }
 
     private static Contract buildContract() {
-        System.out.println("Введите имя артиста:");
+        System.out.println("Enter artist's name:");
         String artistName = scanner.nextLine().trim();
 
-        System.out.println("Введите дату начала контракта (дд.ММ.гггг):");
+        System.out.println("Enter contract start date (dd.MM.yyyy):");
         String startDateInput = scanner.nextLine().trim();
-        System.out.println("Введите дату окончания контракта (дд.ММ.гггг):");
+        System.out.println("Enter contract end date (dd.MM.yyyy):");
         String endDateInput = scanner.nextLine().trim();
 
-        System.out.println("Введите условия контракта:");
+        System.out.println("Enter contract terms:");
         String terms = scanner.nextLine().trim();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -108,8 +108,8 @@ public class ContractManagerApp {
         try {
             return new Contract(artistName, startDate, endDate, terms);
         } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка при создании контракта.");
-            log.error("Ошибка при создании контракта: {}", e.getMessage());
+            System.out.println("Error while creating the contract.");
+            log.error("Contract creation error: {}", e.getMessage());
             return null;
         }
     }
@@ -122,47 +122,47 @@ public class ContractManagerApp {
     }
 
     private static void updateContractTerms(Contract contract) {
-        System.out.println("Введите новые условия контракта:");
+        System.out.println("Enter new contract terms:");
         String newTerms = scanner.nextLine().trim();
 
         try {
             contract.setTerms(newTerms);
-            log.info("Условия контракта {} обновлены.", contract.getId());
-            System.out.println("Условия контракта обновлены.");
+            log.info("Contract terms updated for {}", contract.getId());
+            System.out.println("Contract terms updated.");
         } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка: Условия не могут быть пустыми.");
-            log.error("Ошибка обновления условий контракта: {}", e.getMessage());
+            System.out.println("Error: Terms cannot be empty.");
+            log.error("Error updating contract terms: {}", e.getMessage());
         }
     }
 
     private static void checkContractExpiration(Contract contract) {
-        System.out.println("Контракт ID: " + contract.getId());
-        System.out.println("Дата окончания: " + contract.getEndDate());
-        System.out.println("Дней до истечения: " + contract.daysUntilExpiration());
+        System.out.println("Contract ID: " + contract.getId());
+        System.out.println("End date: " + contract.getEndDate());
+        System.out.println("Days until expiration: " + contract.daysUntilExpiration());
 
         if (contract.daysUntilExpiration() <= 30) {
-            System.out.println("⚠️ Контракт скоро истекает!");
-            log.warn("Контракт {} истекает через {} дней.", contract.getId(), contract.daysUntilExpiration());
+            System.out.println("⚠️ Contract is expiring soon!");
+            log.warn("Contract {} is expiring in {} days.", contract.getId(), contract.daysUntilExpiration());
         } else {
-            System.out.println("Контракт пока действителен.");
-            log.info("Контракт {} еще активен.", contract.getId());
+            System.out.println("The contract is still valid.");
+            log.info("Contract {} is still active.", contract.getId());
         }
     }
 
     private static void showMenu() {
-        System.out.println("\nМеню:");
-        System.out.println("1. Создать новый контракт");
-        System.out.println("2. Управлять существующим контрактом");
-        System.out.println("3. Просмотреть все контракты");
-        System.out.println("4. Выйти");
-        System.out.print("Выберите действие: ");
+        System.out.println("\nMenu:");
+        System.out.println("1. Create a new contract");
+        System.out.println("2. Manage an existing contract");
+        System.out.println("3. View all contracts");
+        System.out.println("4. Exit");
+        System.out.print("Choose an action: ");
     }
 
     private static void showContractMenu() {
-        System.out.println("\nМеню управления контрактом:");
-        System.out.println("1. Обновить условия контракта");
-        System.out.println("2. Проверить дату истечения контракта");
-        System.out.println("3. Выйти в главное меню");
-        System.out.print("Выберите действие: ");
+        System.out.println("\nContract Management Menu:");
+        System.out.println("1. Update contract terms");
+        System.out.println("2. Check contract expiration date");
+        System.out.println("3. Return to the main menu");
+        System.out.print("Choose an action: ");
     }
 }
