@@ -1,7 +1,7 @@
 package de.ait.utilities;
 
 
-// Enum для типа записи
+// Enum for record type
 public enum RecordType {
     INCOME,
     EXPENSE
