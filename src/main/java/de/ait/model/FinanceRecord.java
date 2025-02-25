@@ -1,69 +1,69 @@
 package de.ait.model;
 
 import de.ait.utilities.RecordType;
-//import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 /**
- * Этот класс хранит информацию о финансовых записях (доходы/расходы).
+ * This class stores information about financial records (income/expenses).
  */
 @Slf4j
 public class FinanceRecord {
 
-    private final String id; // Уникальный идентификатор. Генерируется автоматически.
-    //@NonNull
-    private final RecordType type; // Тип записи: доход/расход
-    private double amount; // Сумма. Должна быть положительной.
-    //@NonNull
-    private final String description; // Описание. Не может быть пустым.
-    //@NonNull
-    private final LocalDate date; // Дата. Не может быть в будущем.
+    private final String id; // Unique identifier. Generated automatically.
+    private final RecordType type; // Record type: income/expense
+    private double amount; // Amount. Must be positive.
+    private final String description; // Description. Cannot be empty.
+    private final LocalDate date; // Date. Cannot be in the future.
+    private DateTimeFormatter dateFormatter; // Date formatter
 
     /**
-     * Конструктор для создания финансовой записи.
+     * Constructor for creating a financial record.
      *
-     * @param type        Тип записи (INCOME или EXPENSE). Не может быть null.
-     * @param amount      Сумма. Должна быть больше 0.
-     * @param description Описание. Не может быть null или пустым.
-     * @param date        Дата. Не может быть null или в будущем.
-     * @throws IllegalArgumentException Если данные некорректны.
-     * @throws NullPointerException     Если переданы null-значения.
+     * @param type        Record type (INCOME or EXPENSE). Cannot be null.
+     * @param amount      Amount. Must be greater than 0.
+     * @param description Description. Cannot be null or empty.
+     * @param date        Date. Cannot be null or in the future.
+     * @throws IllegalArgumentException If the data is incorrect.
+     * @throws NullPointerException     If null values are provided.
      */
     public FinanceRecord(RecordType type, double amount, String description, LocalDate date) {
-        // Проверка типа записи (enum)
+
+        // Check record type (enum)
         if (type == null) {
-            log.error("Ошибка: RecordType передан как null");
-            throw new IllegalArgumentException("RecordType не может быть null");
+            log.error("Error: RecordType provided as null");
+            throw new IllegalArgumentException("RecordType cannot be null");
         }
 
-        // Проверка суммы (должна быть > 0)
+        // Check amount (must be > 0)
         if (amount <= 0) {
-            log.error("Ошибка: Некорректная сумма (amount={}): сумма должна быть больше 0", amount);
-            throw new IllegalArgumentException("Сумма должна быть больше 0");
+            log.error("Error: Invalid amount (amount={}): amount must be greater than 0", amount);
+            throw new IllegalArgumentException("Amount must be greater than 0");
         }
 
-        // Проверка описания (не должно быть пустым или содержать только пробелы)
+        // Check description (must not be empty or contain only spaces)
         if (description == null || description.trim().isEmpty()) {
-            log.error("Ошибка: Пустое или null описание");
-            throw new IllegalArgumentException("Описание не может быть пустым");
+            log.error("Error: Empty or null description");
+            throw new IllegalArgumentException("Description cannot be empty");
         }
 
-        // Проверка даты (не должна быть в будущем)
+        // Check date (must not be in the future)
         if (date == null || date.isAfter(LocalDate.now())) {
-            log.error("Ошибка: Неверная дата (date={}): дата не может быть в будущем", date);
-            throw new IllegalArgumentException("Дата не может быть в будущем");
+            log.error("Error: Invalid date (date={}): date cannot be in the future", date);
+            throw new IllegalArgumentException("Date cannot be in the future");
         }
 
-        this.id = UUID.randomUUID().toString(); // Генерация уникального ID
+        this.id = UUID.randomUUID().toString(); // Generate a unique ID
         this.type = type;
         this.amount = amount;
         this.description = description;
         this.date = date;
+        this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy"); // Date format: dd.mm.yyyy
 
-        log.debug("Создана новая финансовая запись: {}", this);
+        log.debug("New financial record created: {}", this);
     }
 
     public String getId() {
@@ -87,20 +87,19 @@ public class FinanceRecord {
     }
 
     /**
-     * Устанавливает новую сумму для записи.
+     * Sets a new amount for the record.
      *
-     * @param amount Новая сумма. Должна быть больше 0.
-     * @throws IllegalArgumentException Если сумма некорректна.
+     * @param amount New amount. Must be greater than 0.
+     * @throws IllegalArgumentException If the amount is invalid.
      */
     public void setAmount(double amount) {
-        if (amount <= 0) { // Проверка на положительное значение
-            log.error("Попытка установить некорректное значение для amount: {}", amount);
-            throw new IllegalArgumentException("Сумма должна быть больше 0");
+        if (amount <= 0) { // Check for positive value
+            log.error("Attempt to set an invalid amount: {}", amount);
+            throw new IllegalArgumentException("Amount must be greater than 0");
         }
         this.amount = amount;
-        log.debug("Установлено значение amount: {}", amount);
+        log.debug("Amount set to: {}", amount);
     }
-
     @Override
     public String toString() {
         return "FinanceRecord{" +
@@ -108,8 +107,7 @@ public class FinanceRecord {
                 ", type=" + type +
                 ", amount=" + amount +
                 ", description='" + description + '\'' +
-                ", date=" + date +
-        +
+                ", date=" + date.format(dateFormatter) +
                 '}';
     }
 }

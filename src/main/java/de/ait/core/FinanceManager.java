@@ -6,80 +6,74 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 public class FinanceManager {
-    private List<FinanceRecord> financeRecords; // Список финансовых записей
+    private List<FinanceRecord> financeRecords; // List of financial records
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy"); // Date formatter
 
     public FinanceManager() {
         this.financeRecords = new ArrayList<>();
-        log.info("FinanceManager инициализирован. Список записей создан.");
+        log.info("FinanceManager initialized. Record list created.");
     }
 
     /**
-     * Добавляет новую финансовую запись (доход или расход).
+     * Adds a new financial record (income or expense).
      *
-     * @param type        Тип записи (INCOME или EXPENSE).
-     * @param amount      Сумма.
-     * @param description Описание.
-     * @param date        Дата.
+     * @param type        Record type (INCOME or EXPENSE).
+     * @param amount      Amount.
+     * @param description Description.
+     * @param date        Date.
      */
-
-
     public void addRecord(RecordType type, double amount, String description, LocalDate date) {
-
-        // Создание записи через конструктор
         FinanceRecord record = new FinanceRecord(type, amount, description, date);
         financeRecords.add(record);
-        log.info("Добавлена новая запись: {}", record);
+        log.info("New record added: {}", record);
     }
 
     /**
-     * Метод вычисляет баланс (разницу между доходами и расходами) за указанный период.
+     * Calculates the balance (difference between income and expenses) for the specified period.
      *
-     * @param startDate Начальная дата периода
-     * @param endDate Конечная дата периода
-     * @return Итоговый баланс за период (доходы минус расходы)
-     * @throws IllegalArgumentException если начальная дата позже конечной
+     * @param startDate Start date of the period
+     * @param endDate   End date of the period
+     * @return Final balance for the period (income minus expenses)
+     * @throws IllegalArgumentException if the start date is later than the end date
      */
     public double calculateBalance(LocalDate startDate, LocalDate endDate) {
-        // Проверка: начальная дата не должна быть позже конечной
         if (startDate.isAfter(endDate)) {
-            log.error("Некорректный диапазон дат: startDate {} идет после endDate {}", startDate, endDate);
-            throw new IllegalArgumentException("Начальная дата не может быть позже конечной даты");
+            log.error("Invalid date range: startDate {} is after endDate {}", startDate.format(dateFormatter), endDate.format(dateFormatter));
+            throw new IllegalArgumentException("Start date cannot be later than end date");
         }
 
-        // Вычисление общей суммы доходов за указанный период
         double totalIncome = financeRecords.stream()
-                .filter(record -> record.getType() == RecordType.INCOME) // Оставляем только доходы
-                .filter(record -> !record.getDate().isBefore(startDate) && !record.getDate().isAfter(endDate)) // Фильтруем по диапазону дат
-                .mapToDouble(FinanceRecord::getAmount) // Преобразуем в сумму
-                .sum(); // Суммируем
+                .filter(record -> record.getType() == RecordType.INCOME)
+                .filter(record -> !record.getDate().isBefore(startDate) && !record.getDate().isAfter(endDate))
+                .mapToDouble(FinanceRecord::getAmount)
+                .sum();
 
-        // Вычисление общей суммы расходов за указанный период
         double totalExpense = financeRecords.stream()
-                .filter(record -> record.getType() == RecordType.EXPENSE) // Оставляем только расходы
-                .filter(record -> !record.getDate().isBefore(startDate) && !record.getDate().isAfter(endDate)) // Фильтруем по диапазону дат
-                .mapToDouble(FinanceRecord::getAmount) // Преобразуем в сумму
-                .sum(); // Суммируем
+                .filter(record -> record.getType() == RecordType.EXPENSE)
+                .filter(record -> !record.getDate().isBefore(startDate) && !record.getDate().isAfter(endDate))
+                .mapToDouble(FinanceRecord::getAmount)
+                .sum();
 
-        // Расчет баланса (доходы - расходы)
         double balance = totalIncome - totalExpense;
-        log.info("Рассчитан баланс за период с {} по {}: {}", startDate, endDate, balance);
+        log.info("Balance calculated for the period from {} to {}: {}", startDate.format(dateFormatter), endDate.format(dateFormatter), balance);
         return balance;
     }
 
     /**
-     * Сохраняет все финансовые записи в файл.
+     * Saves all financial records to a file.
      *
-     * @param fileName Имя файла для сохранения.
-     * @throws IOException Если произошла ошибка при записи в файл.
+     * @param fileName File name for saving.
+     * @throws IOException If an error occurs while writing to the file.
      */
     public void saveRecordsToFile(String fileName) throws IOException {
         if (financeRecords.isEmpty()) {
-            log.warn("Список финансовых записей пуст. Ничего не будет сохранено.");
+            log.warn("The financial records list is empty. Nothing will be saved.");
             return;
         }
 
@@ -88,101 +82,92 @@ public class FinanceManager {
                 writer.write(record.toString());
                 writer.newLine();
             }
-            log.info("Финансовые записи сохранены в файл: {}", fileName);
+            log.info("Financial records saved to file: {}", fileName);
         } catch (IOException e) {
-            log.error("Ошибка при сохранении записей в файл: {}", e.getMessage());
+            log.error("Error saving records to file: {}", e.getMessage());
             throw e;
         }
     }
 
     /**
-     * Загружает финансовые записи из файла.
+     * Loads financial records from a file.
      *
-     * @param fileName Имя файла для загрузки.
-     * @throws IOException Если произошла ошибка при чтении файла.
+     * @param fileName File name for loading.
+     * @throws IOException If an error occurs while reading the file.
      */
     public void loadRecordsFromFile(String fileName) throws IOException {
-
         File file = new File(fileName);
         if (!file.exists()) {
-            log.error("Файл не найден: {}", fileName);
-            throw new FileNotFoundException("Файл не найден: " + fileName);
+            log.error("File not found: {}", fileName);
+            throw new FileNotFoundException("File not found: " + fileName);
         }
-        financeRecords.clear(); // Очищаем текущие записи перед загрузкой
+        financeRecords.clear();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Парсинг строки и создание объекта FinanceRecord
                 FinanceRecord record = parseRecordFromString(line);
                 financeRecords.add(record);
             }
-            log.info("Финансовые записи загружены из файла: {}", fileName);
+            log.info("Financial records loaded from file: {}", fileName);
         } catch (IOException e) {
-            log.error("Ошибка при загрузке записей из файла: {}", e.getMessage());
+            log.error("Error loading records from file: {}", e.getMessage());
             throw e;
         }
     }
 
     /**
-     * Парсит строку и создает объект FinanceRecord.
-     * (Этот метод нужно реализовать в зависимости от формата записи в файле)
+     * Parses a string and creates a FinanceRecord object.
      *
-     * @param line Строка из файла.
-     * @return Объект FinanceRecord.
+     * @param line A line from the file.
+     * @return FinanceRecord object.
      */
-
-    // Парсинг — это процесс анализа и преобразования данных из одного формата в другой, чтобы их можно было использовать в программе
-
     private FinanceRecord parseRecordFromString(String line) {
-        // проверяем корректность данных.
-        String[] parts = line.split(",");   // разделяем строку по запятой
-        if (parts.length != 4) { // проверяем, что строка содержит все необходимые части
-            log.error("Некорректный формат строки: {}", line);
-            throw new IllegalArgumentException("Некорректный формат строки: " + line);
+        String[] parts = line.split(",");
+        if (parts.length != 4) {
+            log.error("Invalid string format: {}", line);
+            throw new IllegalArgumentException("Invalid string format: " + line);
         }
 
-        RecordType type;  // парсим тип записи (RecordType)
+        RecordType type;
         try {
-            type = RecordType.valueOf(parts[0]); // преобразуем строку в enum
+            type = RecordType.valueOf(parts[0]);
         } catch (IllegalArgumentException e) {
-            log.error("Некорректный тип записи: {}", parts[0]);
-            throw new IllegalArgumentException("Некорректный тип записи: " + parts[1]);
+            log.error("Invalid record type: {}", parts[0]);
+            throw new IllegalArgumentException("Invalid record type: " + parts[0]);
         }
 
-        double amount; // парсим сумму
+        double amount;
         try {
-            amount = Double.parseDouble(parts[1]); // преобразуем строку в число
+            amount = Double.parseDouble(parts[1]);
         } catch (NumberFormatException e) {
-            log.error("Некорректная сумма: {}", parts[1]);
-            throw new IllegalArgumentException("Некорректная сумма: " + parts[1]);
+            log.error("Invalid amount: {}", parts[1]);
+            throw new IllegalArgumentException("Invalid amount: " + parts[1]);
         }
 
-        String description = parts[2]; // парсим описание
+        String description = parts[2];
         if (description.trim().isEmpty()) {
-            log.error("Описание не может быть пустым");
-            throw new IllegalArgumentException("Описание не может быть пустым");
+            log.error("Description cannot be empty");
+            throw new IllegalArgumentException("Description cannot be empty");
         }
 
-        LocalDate date; // парсим дату
+        LocalDate date;
         try {
-            date = LocalDate.parse(parts[3]); // преобразуем строку в LocalDate
+            date = LocalDate.parse(parts[3], dateFormatter); // Using formatter for correct date format
         } catch (Exception e) {
-            log.error("Некорректная дата: {}", parts[3]);
-            throw new IllegalArgumentException("Некорректная дата: " + parts[4]);
+            log.error("Invalid date: {}", parts[3]);
+            throw new IllegalArgumentException("Invalid date: " + parts[3]);
         }
 
         return new FinanceRecord(type, amount, description, date);
     }
 
     /**
-     * возвращает список всех финансовых записей.
+     * Returns the list of all financial records.
      *
-     * @return Список записей.
+     * @return List of records.
      */
-
-    // добавили защиту от изменений списка извне, возвращая копию списка.
     public List<FinanceRecord> getFinanceRecords() {
-        return new ArrayList<>(financeRecords); // возвращаем копию списка
+        return new ArrayList<>(financeRecords);
     }
 }

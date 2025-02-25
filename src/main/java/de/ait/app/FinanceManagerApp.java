@@ -2,6 +2,7 @@ package de.ait;
 
 import de.ait.core.FinanceManager;
 import de.ait.utilities.RecordType;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -10,17 +11,18 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
+
 @Slf4j
 public class FinanceManagerApp {
 
     private FinanceManager financeManager;
     private Scanner sc;
-    private DateTimeFormatter dateFormatter; // Форматтер для даты
+    private DateTimeFormatter dateFormatter; // Date formatter
 
     public FinanceManagerApp() {
         this.financeManager = new FinanceManager();
         this.sc = new Scanner(System.in);
-        this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy"); // Формат даты: дд.ММ.гггг
+        this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy"); // Date format: dd.mm.yyyy
     }
 
     public void start() {
@@ -28,7 +30,7 @@ public class FinanceManagerApp {
         while (running) {
             printMenu();
             int choice = sc.nextInt();
-            sc.nextLine(); // Очистка буфера после nextInt()
+            sc.nextLine(); // Clear buffer after nextInt()
 
             switch (choice) {
                 case 1:
@@ -48,55 +50,64 @@ public class FinanceManagerApp {
                     break;
                 case 6:
                     running = false;
-                    System.out.println("Выход из программы.");
+                    System.out.println("Exiting the program.");
                     break;
                 default:
-                    System.out.println("Неверный выбор. Попробуйте снова.");
+                    log.warn("Invalid choice. Please try again.");
+                    System.out.println("Invalid choice. Please try again.");
             }
         }
         sc.close();
     }
 
     private void printMenu() {
-        System.out.println("1. Добавить запись");
-        System.out.println("2. Показать все записи");
-        System.out.println("3. Рассчитать баланс за период");
-        System.out.println("4. Сохранить записи в файл");
-        System.out.println("5. Загрузить записи из файла");
-        System.out.println("6. Выйти");
-        System.out.print("Выберите действие: ");
+        System.out.println("1. Add record");
+        System.out.println("2. Show all records");
+        System.out.println("3. Calculate balance for a period");
+        System.out.println("4. Save records to file");
+        System.out.println("5. Load records from file");
+        System.out.println("6. Exit");
+        System.out.print("Choose an action: ");
     }
 
     private void addRecord() {
-        System.out.print("Введите тип записи (INCOME/EXPENSE): ");
+        System.out.print("Enter record type (INCOME/EXPENSE): ");
         String typeStr = sc.nextLine().toUpperCase();
         RecordType type;
         try {
             type = RecordType.valueOf(typeStr);
         } catch (IllegalArgumentException e) {
-            System.out.println("Неверный тип записи. Используйте INCOME или EXPENSE.");
+            log.warn("Invalid record type. Use INCOME or EXPENSE.");
+            System.err.println("Invalid record type. Use INCOME or EXPENSE.");
             return;
         }
 
-        System.out.print("Введите сумму: ");
+        System.out.print("Enter amount: ");
         double amount;
         try {
             amount = Double.parseDouble(sc.nextLine());
         } catch (NumberFormatException e) {
-            System.out.println("Неверный формат суммы. Введите число.");
+            log.warn("Invalid amount format. Enter a number.");
+            System.err.println("Invalid amount format. Enter a number.");
             return;
         }
 
-        System.out.print("Введите описание: ");
+        System.out.print("Enter description: ");
         String description = sc.nextLine();
+        if (description.trim().isEmpty()) {
+            log.warn("The field cannot be empty. Enter a description of the operation");
+            System.err.println("The field cannot be empty. Enter a description of the operation");
+            return;
+        }
 
-        System.out.print("Введите дату (дд.ММ.гггг): ");
+        System.out.print("Enter date (dd.MM.yyyy): ");
         LocalDate date;
         try {
             String dateStr = sc.nextLine();
-            date = LocalDate.parse(dateStr, dateFormatter); // Парсинг даты из строки
+            date = LocalDate.parse(dateStr, dateFormatter); // Parsing date from string
         } catch (DateTimeParseException e) {
-            System.out.println("Неверный формат даты. Используйте формат дд.ММ.гггг");
+            log.warn("Invalid date format. Use dd.mm.yyyy");
+            System.err.println("Invalid date format. Use dd.MM.yyyy");
             return;
         }
 
@@ -108,49 +119,53 @@ public class FinanceManagerApp {
     }
 
     private void calculateBalance() {
-        System.out.print("Введите начальную дату (дд.ММ.гггг): ");
+        System.out.print("Enter start date (dd.MM.yyyy): ");
         LocalDate startDate;
         try {
             String startDateStr = sc.nextLine();
-            startDate = LocalDate.parse(startDateStr, dateFormatter); // Парсинг начальной даты
+            startDate = LocalDate.parse(startDateStr, dateFormatter); // Parsing start date
         } catch (DateTimeParseException e) {
-            System.out.println("Неверный формат даты. Используйте формат дд.ММ.гггг");
+            log.warn("Invalid date format. Use dd.mm.yyyy");
+            System.err.println("Invalid date format. Use dd.MM.yyyy");
             return;
         }
 
-        System.out.print("Введите конечную дату (дд.ММ.гггг): ");
+        System.out.print("Enter end date (dd.mm.yyyy): ");
         LocalDate endDate;
         try {
             String endDateStr = sc.nextLine();
-            endDate = LocalDate.parse(endDateStr, dateFormatter); // Парсинг конечной даты
+            endDate = LocalDate.parse(endDateStr, dateFormatter); // Parsing end date
         } catch (DateTimeParseException e) {
-            System.out.println("Неверный формат даты. Используйте формат дд.ММ.гггг");
+            log.warn("Invalid date format. Use dd.mm.yyyy");
+            System.err.println("Invalid date format. Use dd.MM.yyyy");
             return;
         }
 
         double balance = financeManager.calculateBalance(startDate, endDate);
-        System.out.println("Баланс за период с " + startDate + " по " + endDate + ": " + balance);
+        System.out.println("Balance for the period from " + startDate + " to " + endDate + ": " + balance);
     }
 
     private void saveRecordsToFile() {
-        System.out.print("Введите имя файла для сохранения: ");
+        System.out.print("Enter file name to save: ");
         String fileName = sc.nextLine();
         try {
             financeManager.saveRecordsToFile(fileName);
-            System.out.println("Записи успешно сохранены в файл: " + fileName);
+            System.out.println("Records successfully saved to file: " + fileName);
         } catch (IOException e) {
-            System.out.println("Ошибка при сохранении записей: " + e.getMessage());
+            log.error("Error saving records: " + e.getMessage());
+            System.err.println("Error saving records: " + e.getMessage());
         }
     }
 
     private void loadRecordsFromFile() {
-        System.out.print("Введите имя файла для загрузки: ");
+        System.out.print("Enter file name to load: ");
         String fileName = sc.nextLine();
         try {
             financeManager.loadRecordsFromFile(fileName);
-            System.out.println("Записи успешно загружены из файла: " + fileName);
+            System.out.println("Records successfully loaded from file: " + fileName);
         } catch (IOException e) {
-            System.out.println("Ошибка при загрузке записей: " + e.getMessage());
+            log.error("Error loading records: " + e.getMessage());
+            System.out.println("Error loading records: " + e.getMessage());
         }
     }
 
