@@ -28,7 +28,7 @@ public class EventManagerTest {
         try {
             eventId = eventManager.addEvent(event);
         } catch (EventAlreadyInListException exception) {
-            System.out.println("Событие уже в списке " +  exception.getMessage());
+            System.out.println("Event is already in the list " + exception.getMessage());
         }
         String finalEventId = eventId;
         assertDoesNotThrow(() -> eventManager.getEventById(finalEventId));
@@ -50,22 +50,22 @@ public class EventManagerTest {
             "World Cup 2025, SPORTS, 2025, 7, 15, Russia Stadium, 300000, 250000, 70.00, Real Madrid"
     })
     void testAddEventIsSuccess(String name,
-                      String eventType,
-                      int year, int month, int day,
-                      String location,
-                      int totalTicketCount,
-                      int soldTicketCount,
-                      double ticketPrice,
-                      String artist) {
+                               String eventType,
+                               int year, int month, int day,
+                               String location,
+                               int totalTicketCount,
+                               int soldTicketCount,
+                               double ticketPrice,
+                               String artist) {
         Event event = new Event(
-                name,                           // Название события
-                EventType.valueOf(eventType),   // Тип события
-                LocalDate.of(year, month, day), // Дата события
-                location,                       // Место проведения
-                totalTicketCount,               // Всего билетов
-                soldTicketCount,                // Продано билетов
-                ticketPrice,                    // Цена билета
-                new HashSet<>(List.of(artist))  // Список артистов
+                name,                           // Event name
+                EventType.valueOf(eventType),   // Event type
+                LocalDate.of(year, month, day), // Event date
+                location,                       // Location
+                totalTicketCount,               // Total tickets
+                soldTicketCount,                // Sold tickets
+                ticketPrice,                    // Ticket price
+                new HashSet<>(List.of(artist))  // List of artists
         );
         EventManager eventManager = new EventManager();
         assertDoesNotThrow(() -> eventManager.addEvent(event));
@@ -159,7 +159,7 @@ public class EventManagerTest {
         try {
             eventManager.addEvent(event);
         } catch (EventAlreadyInListException exception) {
-            System.out.println("Событие уже в списке " +  exception.getMessage());
+            System.out.println("Event is already in the list " + exception.getMessage());
         }
         assertThrows(EventAlreadyInListException.class, () -> eventManager.addEvent(event));
     }
@@ -173,28 +173,28 @@ public class EventManagerTest {
             "World Cup 2025, SPORTS, 2025, 7, 15, Russia Stadium, 300000, 250000, 70.00, Real Madrid"
     })
     void testRemoveEventIsSuccess(String name,
-                               String eventType,
-                               int year, int month, int day,
-                               String location,
-                               int totalTicketCount,
-                               int soldTicketCount,
-                               double ticketPrice,
-                               String artist) {
+                                  String eventType,
+                                  int year, int month, int day,
+                                  String location,
+                                  int totalTicketCount,
+                                  int soldTicketCount,
+                                  double ticketPrice,
+                                  String artist) {
         Event event = new Event(
-                name,                           // Название события
-                EventType.valueOf(eventType),   // Тип события
-                LocalDate.of(year, month, day), // Дата события
-                location,                       // Место проведения
-                totalTicketCount,               // Всего билетов
-                soldTicketCount,                // Продано билетов
-                ticketPrice,                    // Цена билета
-                new HashSet<>(List.of(artist))  // Список артистов
+                name,                           // Event name
+                EventType.valueOf(eventType),   // Event type
+                LocalDate.of(year, month, day), // Event date
+                location,                       // Location
+                totalTicketCount,               // Total tickets
+                soldTicketCount,                // Sold tickets
+                ticketPrice,                    // Ticket price
+                new HashSet<>(List.of(artist))  // List of artists
         );
         EventManager eventManager = new EventManager();
         try {
             eventManager.addEvent(event);
         } catch (EventAlreadyInListException exception) {
-            System.out.println("Событие уже в списке " +  exception.getMessage());
+            System.out.println("Event is already in the list " + exception.getMessage());
         }
         assertDoesNotThrow(() -> eventManager.removeEvent(event));
     }
@@ -297,7 +297,7 @@ public class EventManagerTest {
         try {
             eventId = eventManager.addEvent(event);
         } catch (EventAlreadyInListException exception) {
-            System.out.println("Событие уже в списке " +  exception.getMessage());
+            System.out.println("Event is already in the list " + exception.getMessage());
         }
         String finalEventId = eventId;
         assertDoesNotThrow(() -> eventManager.removeEventById(finalEventId));

@@ -8,160 +8,160 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.HashMap;
 
 /**
- * Класс EventManager управляет списком мероприятий.
- * Содержит список событий в виде HashMap, где ключ - это id,
- * а значение - объект класса Event
- * Позволяет добавлять и удалять события, искать их по идентификатору
- * и выводить список всех событий
+ * The EventManager class manages a list of events.
+ * It contains a list of events in the form of a HashMap, where the key is the id,
+ * and the value is an object of the Event class.
+ * It allows adding and removing events, searching for them by identifier,
+ * and displaying a list of all events.
  */
 @Slf4j
 public class EventManager {
-    private HashMap<String, Event> events; // список событий (String - id, Event - событие)
+    private HashMap<String, Event> events; // list of events (String - id, Event - event)
 
     public EventManager() {
         events = new HashMap<>();
     }
 
     /**
-     * Возврат копии списка событий
-     * @return Копия списка событий
+     * Returns a copy of the event list.
+     * @return Copy of the event list
      */
     public HashMap<String, Event> getEvents() {
         return new HashMap<>(events);
     }
 
     /**
-     * Возвращает событие по его уникальному идентификатору,
-     * если не найдено выводит соответствующее сообщение об ошибке
-     * @param eventId Идентификатор удаляемого события
-     * @return Событие по его уникальному идентификатору
-     * @throws EventIsNotInListException Если событие с таким идентификатором не найдено в списке
+     * Returns an event by its unique identifier,
+     * if not found, displays an appropriate error message.
+     * @param eventId Identifier of the event to be removed
+     * @return Event by its unique identifier
+     * @throws EventIsNotInListException If the event with this identifier is not found in the list
      */
     public Event getEventById(String eventId) throws EventIsNotInListException {
         if (!events.containsKey(eventId)){
-            log.error("Ошибка! Данного события нет в списке");
-            throw new EventIsNotInListException("Ошибка! Данного события нет в списке");
+            log.error("Error! This event is not in the list");
+            throw new EventIsNotInListException("Error! This event is not in the list");
         } else {
             return events.get(eventId);
         }
     }
 
     /**
-     * Добавляет новое событие в список
-     * @param event Событие для добавления
-     * @throws EventAlreadyInListException Если событие с таким идентификатором уже есть в списке
+     * Adds a new event to the list.
+     * @param event Event to be added
+     * @throws EventAlreadyInListException If an event with this identifier already exists in the list
      */
     public String addEvent(Event event) throws EventAlreadyInListException {
         if (event == null) {
-            log.error("Ошибка! Событие равно нулю");
-            throw new IllegalArgumentException("Ошибка! Событие равно нулю");
+            log.error("Error! Event is null");
+            throw new IllegalArgumentException("Error! Event is null");
         } else if (event.getName() == null || event.getName().isEmpty()) {
-            log.error("Некорректное имя: Имя не может быть пустым или равным нулю");
+            log.error("Invalid name: Name cannot be empty or null");
             throw new IllegalArgumentException(
-                    "Некорректное имя: Имя не может быть пустым или равным нулю");
+                    "Invalid name: Name cannot be empty or null");
         } else if (event.getEventType() == null) {
-            log.error("Некорректный тип события: Тип события не может быть пустым или равным нулю");
+            log.error("Invalid event type: Event type cannot be empty or null");
             throw new IllegalArgumentException(
-                    "Некорректный тип события: Тип события не может быть пустым или равным нулю");
+                    "Invalid event type: Event type cannot be empty or null");
         } else if (event.getDate() == null) {
-            log.error("Некорректная дата: Дата не может быть пустой");
+            log.error("Invalid date: Date cannot be empty");
             throw new IllegalArgumentException(
-                    "Некорректная дата: Дата не может быть пустой");
+                    "Invalid date: Date cannot be empty");
         } else if (event.getLocation() == null || event.getLocation().isEmpty()) {
-            log.error("Некорректное место проведения: Место проведения не может быть пустым или равным нулю");
+            log.error("Invalid location: Location cannot be empty or null");
             throw new IllegalArgumentException(
-                    "Некорректное место проведения: Место проведения не может быть пустым или равным нулю");
+                    "Invalid location: Location cannot be empty or null");
         } else if (event.getTotalTicketCount() <= 0) {
-            log.error("Некорректное количество билетов: Количество билетов не может быть меньше или равным нулю");
+            log.error("Invalid ticket count: Ticket count cannot be less than or equal to zero");
             throw new IllegalArgumentException(
-                    "Некорректное количество билетов: Количество билетов не может быть меньше или равным нулю");
+                    "Invalid ticket count: Ticket count cannot be less than or equal to zero");
         } else if (event.getTicketPrice() < 0) {
-            log.error("Некорректная цена билета: Цена билета не может быть меньше нуля");
+            log.error("Invalid ticket price: Ticket price cannot be less than zero");
             throw new IllegalArgumentException(
-                    "Некорректная цена билета: Цена билета не может быть меньше нуля");
+                    "Invalid ticket price: Ticket price cannot be less than zero");
         } else if (events.containsKey(event.getId())){
-            log.error("Ошибка! Данное событие уже есть в списке");
-            throw new EventAlreadyInListException("Ошибка! Данное событие уже есть в списке");
+            log.error("Error! This event already exists in the list");
+            throw new EventAlreadyInListException("Error! This event already exists in the list");
         } else {
             events.put(event.getId(), event);
-            log.info("Событие {} с Id {} добавлено в список", event.getName(), event.getId());
-            System.out.println("Событие " + event.getName() + " с Id " + event.getId() + " добавлено в список ");
+            log.info("Event {} with Id {} added to the list", event.getName(), event.getId());
+            System.out.println("Event " + event.getName() + " with Id " + event.getId() + " added to the list ");
             return event.getId();
         }
     }
 
     /**
-     * Удаляет событие из списка
-     * @param event Событие для удаления
-     * @throws EventIsNotInListException Если событие с таким идентификатором не найдено в списке
+     * Removes an event from the list.
+     * @param event Event to be removed
+     * @throws EventIsNotInListException If the event with this identifier is not found in the list
      */
     public void removeEvent(Event event) throws EventIsNotInListException {
         if (event == null) {
-            log.error("Ошибка! Событие равно нулю");
-            throw new IllegalArgumentException("Ошибка! Событие равно нулю");
+            log.error("Error! Event is null");
+            throw new IllegalArgumentException("Error! Event is null");
         } else if (event.getName() == null || event.getName().isEmpty()) {
-            log.error("Некорректное имя: Имя не может быть пустым или равным нулю");
+            log.error("Invalid name: Name cannot be empty or null");
             throw new IllegalArgumentException(
-                    "Некорректное имя: Имя не может быть пустым или равным нулю");
+                    "Invalid name: Name cannot be empty or null");
         } else if (event.getEventType() == null) {
-            log.error("Некорректный тип события: Тип события не может быть пустым или равным нулю");
+            log.error("Invalid event type: Event type cannot be empty or null");
             throw new IllegalArgumentException(
-                    "Некорректный тип события: Тип события не может быть пустым или равным нулю");
+                    "Invalid event type: Event type cannot be empty or null");
         } else if (event.getDate() == null) {
-            log.error("Некорректная дата: Дата не может быть пустой");
+            log.error("Invalid date: Date cannot be empty");
             throw new IllegalArgumentException(
-                    "Некорректная дата: Дата не может быть пустой");
+                    "Invalid date: Date cannot be empty");
         } else if (event.getLocation() == null || event.getLocation().isEmpty()) {
-            log.error("Некорректное место проведения: Место проведения не может быть пустым или равным нулю");
+            log.error("Invalid location: Location cannot be empty or null");
             throw new IllegalArgumentException(
-                    "Некорректное место проведения: Место проведения не может быть пустым или равным нулю");
+                    "Invalid location: Location cannot be empty or null");
         } else if (event.getTotalTicketCount() <= 0) {
-            log.error("Некорректное количество билетов: Количество билетов не может быть меньше или равным нулю");
+            log.error("Invalid ticket count: Ticket count cannot be less than or equal to zero");
             throw new IllegalArgumentException(
-                    "Некорректное количество билетов: Количество билетов не может быть меньше или равным нулю");
+                    "Invalid ticket count: Ticket count cannot be less than or equal to zero");
         } else if (event.getTicketPrice() < 0) {
-            log.error("Некорректная цена билета: Цена билета не может быть меньше нуля");
+            log.error("Invalid ticket price: Ticket price cannot be less than zero");
             throw new IllegalArgumentException(
-                    "Некорректная цена билета: Цена билета не может быть меньше нуля");
+                    "Invalid ticket price: Ticket price cannot be less than zero");
         } else if (!events.containsKey(event.getId())){
-            log.error("Ошибка! Данного события нет в списке");
-            throw new EventIsNotInListException("Ошибка! Данного события нет в списке");
+            log.error("Error! This event is not in the list");
+            throw new EventIsNotInListException("Error! This event is not in the list");
         } else {
             events.remove(event.getId());
-            log.info("Событие {} с Id {} удалено из списка", event.getName(), event.getId());
-            System.out.println("Событие " + event.getName() + " с Id " + event.getId() + " удалено из списка ");
+            log.info("Event {} with Id {} removed from the list", event.getName(), event.getId());
+            System.out.println("Event " + event.getName() + " with Id " + event.getId() + " removed from the list ");
         }
     }
 
     /**
-     * Удаляет событие из списка по его идентификатору
-     * @param eventId Идентификатор удаляемого события
-     * @throws EventIsNotInListException Если событие с таким идентификатором не найдено в списке
+     * Removes an event from the list by its identifier.
+     * @param eventId Identifier of the event to be removed
+     * @throws EventIsNotInListException If the event with this identifier is not found in the list
      */
     public void removeEventById(String eventId) throws EventIsNotInListException {
         if (!events.containsKey(eventId)){
-            log.error("Ошибка! Данного события нет в списке");
-            throw new EventIsNotInListException("Ошибка! Данного события нет в списке");
+            log.error("Error! This event is not in the list");
+            throw new EventIsNotInListException("Error! This event is not in the list");
         } else {
             events.remove(eventId);
-            log.info("Событие с Id {} удалено из списка", eventId);
-            System.out.println("Событие с Id " + eventId + " удалено из списка ");
+            log.info("Event with Id {} removed from the list", eventId);
+            System.out.println("Event with Id " + eventId + " removed from the list ");
         }
     }
 
     /**
-     * Отображает список всех контрактов.
-     * Если список пуст, выводится соответствующее сообщение.
+     * Displays a list of all contracts.
+     * If the list is empty, an appropriate message is displayed.
      */
     public void displayAllEvents() {
         if (events.isEmpty()) {
-            System.out.println("Список событий пуст.");
+            System.out.println("The event list is empty.");
         } else {
-            System.out.println("Список всех событий:");
+            System.out.println("List of all events:");
             int count = 1;
             for (Event event : events.values()) {
                 System.out.println("--------------------------------");
-                System.out.println("Событие "+ count);
+                System.out.println("Event "+ count);
                 event.printEventInfo();
             }
         }
