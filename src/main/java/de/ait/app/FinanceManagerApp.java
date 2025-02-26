@@ -2,27 +2,28 @@ package de.ait;
 
 import de.ait.core.FinanceManager;
 import de.ait.utilities.RecordType;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
-
 
 @Slf4j
 public class FinanceManagerApp {
 
     private FinanceManager financeManager;
     private Scanner sc;
-    private DateTimeFormatter dateFormatter; // Date formatter
+    private DateTimeFormatter dateFormatter;
 
     public FinanceManagerApp() {
         this.financeManager = new FinanceManager();
         this.sc = new Scanner(System.in);
-        this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy"); // Date format: dd.mm.yyyy
+        this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     }
 
     public void start() {
@@ -96,9 +97,9 @@ public class FinanceManagerApp {
         LocalDate date;
         try {
             String dateStr = sc.nextLine();
-            date = LocalDate.parse(dateStr, dateFormatter); // Parsing date from string
+            date = LocalDate.parse(dateStr, dateFormatter);
         } catch (DateTimeParseException e) {
-            log.warn("Invalid date format. Use dd.mm.yyyy");
+            log.warn("Invalid date format. Use dd.MM.yyyy");
             System.err.println("Invalid date format. Use dd.MM.yyyy");
             return;
         }
@@ -115,20 +116,20 @@ public class FinanceManagerApp {
         LocalDate startDate;
         try {
             String startDateStr = sc.nextLine();
-            startDate = LocalDate.parse(startDateStr, dateFormatter); // Parsing start date
+            startDate = LocalDate.parse(startDateStr, dateFormatter);
         } catch (DateTimeParseException e) {
-            log.warn("Invalid date format. Use dd.mm.yyyy");
+            log.warn("Invalid date format. Use dd.MM.yyyy");
             System.err.println("Invalid date format. Use dd.MM.yyyy");
             return;
         }
 
-        System.out.print("Enter end date (dd.mm.yyyy): ");
+        System.out.print("Enter end date (dd.MM.yyyy): ");
         LocalDate endDate;
         try {
             String endDateStr = sc.nextLine();
-            endDate = LocalDate.parse(endDateStr, dateFormatter); // Parsing end date
+            endDate = LocalDate.parse(endDateStr, dateFormatter);
         } catch (DateTimeParseException e) {
-            log.warn("Invalid date format. Use dd.mm.yyyy");
+            log.warn("Invalid date format. Use dd.MM.yyyy");
             System.err.println("Invalid date format. Use dd.MM.yyyy");
             return;
         }
@@ -138,8 +139,7 @@ public class FinanceManagerApp {
     }
 
     private void saveRecordsToFile() {
-
-        String fileName = "Finance record.txt";
+        String fileName = "src/main/java/de/ait/files/FinanceRecord.ser"; // .ser extension for serialized files
         System.out.print("Save records to file: " + fileName);
         try {
             financeManager.saveRecordsToFile(fileName);
@@ -151,9 +151,8 @@ public class FinanceManagerApp {
     }
 
     private void loadRecordsFromFile() {
-
-        String fileName = "Finance record.txt";
-        System.out.print("Load records to file: " + fileName);
+        String fileName = "src/main/java/de/ait/files/FinanceRecord.ser";
+        System.out.print("Load records from file: " + fileName);
         try {
             financeManager.loadRecordsFromFile(fileName);
             System.out.println("Records successfully loaded from file: " + fileName);
