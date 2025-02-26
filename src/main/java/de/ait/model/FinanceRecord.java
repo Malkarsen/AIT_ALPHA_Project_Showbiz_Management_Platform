@@ -3,21 +3,23 @@ package de.ait.model;
 import de.ait.utilities.RecordType;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Slf4j
-public class FinanceRecord implements Serializable { // Add Serializable
-    private static final long serialVersionUID = 1L; // Unique version identifier
+public class FinanceRecord implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final String id;
     private final RecordType type;
     private double amount;
     private final String description;
     private final LocalDate date;
-    private transient DateTimeFormatter dateFormatter; // This field won't be serialized
+    private transient DateTimeFormatter dateFormatter;
 
     public FinanceRecord(RecordType type, double amount, String description, LocalDate date) {
         if (type == null) {
@@ -42,10 +44,15 @@ public class FinanceRecord implements Serializable { // Add Serializable
         this.amount = amount;
         this.description = description;
         this.date = date;
-        this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy"); // Initialize after deserialization
+        this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     }
 
-    // Getters and other methods
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject(); //
+        this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    }
+
+    // Геттеры и другие методы
     public String getId() {
         return id;
     }
@@ -64,14 +71,6 @@ public class FinanceRecord implements Serializable { // Add Serializable
 
     public LocalDate getDate() {
         return date;
-    }
-
-    public void setAmount(double amount) {
-        if (amount <= 0) {
-            log.error("Attempt to set an invalid amount: {}", amount);
-            throw new IllegalArgumentException("Amount must be greater than 0");
-        }
-        this.amount = amount;
     }
 
     @Override
