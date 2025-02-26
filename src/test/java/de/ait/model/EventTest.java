@@ -41,51 +41,50 @@ public class EventTest {
             "Champions League Final 2025, SPORTS, 2025, 5, 28, London Wembley Stadium, 90000, 87000, 60.00, Manchester City, Real Madrid, 5_220_000, 0",
             "Hamlet by Shakespeare, THEATER, 2025, 9, 10, Moscow Bolshoi Theatre, 1200, 950, 50.00, John Smith, Emma Brown, 48_000.0, -500.0",
             "Local Poetry Night, MEETUP, 2025, 3, 10, Smalltown Community Center, 100, 0, 5.00, null, null, 200, -200"
-
     })
     void testCalculateProfitWhenProfitIsDifferent(String name,
-                                      String eventType,
-                                      int year, int month, int day,
-                                      String location,
-                                      int totalTicketCount,
-                                      int soldTicketCount,
-                                      double ticketPrice,
-                                      String artist1, String artist2,
-                                      double expenses,
-                                      double expectedProfit) {
+                                                  String eventType,
+                                                  int year, int month, int day,
+                                                  String location,
+                                                  int totalTicketCount,
+                                                  int soldTicketCount,
+                                                  double ticketPrice,
+                                                  String artist1, String artist2,
+                                                  double expenses,
+                                                  double expectedProfit) {
         Event event;
         if (artist1 == null) {
             event = new Event(
-                    name,                           // Название события
-                    EventType.valueOf(eventType),   // Тип события
-                    LocalDate.of(year, month, day), // Дата события
-                    location,                       // Место проведения
-                    totalTicketCount,               // Всего билетов
-                    soldTicketCount,                // Продано билетов
-                    ticketPrice                     // Цена билета
+                    name,                           // Event name
+                    EventType.valueOf(eventType),   // Event type
+                    LocalDate.of(year, month, day), // Event date
+                    location,                       // Location
+                    totalTicketCount,               // Total tickets
+                    soldTicketCount,                // Sold tickets
+                    ticketPrice                     // Ticket price
             );
         } else if (soldTicketCount == 0){
             event = new Event(
-                    name,                           // Название события
-                    EventType.valueOf(eventType),   // Тип события
-                    LocalDate.of(year, month, day), // Дата события
-                    location,                       // Место проведения
-                    totalTicketCount,               // Всего билетов
-                    ticketPrice                     // Цена билета
+                    name,                           // Event name
+                    EventType.valueOf(eventType),   // Event type
+                    LocalDate.of(year, month, day), // Event date
+                    location,                       // Location
+                    totalTicketCount,               // Total tickets
+                    ticketPrice                     // Ticket price
             );
         } else {
             event = new Event(
-                    name,                           // Название события
-                    EventType.valueOf(eventType),   // Тип события
-                    LocalDate.of(year, month, day), // Дата события
-                    location,                       // Место проведения
-                    totalTicketCount,               // Всего билетов
-                    soldTicketCount,                // Продано билетов
-                    ticketPrice,                    // Цена билета
-                    new HashSet<>(List.of(artist1, artist2)) // Список артистов
+                    name,                           // Event name
+                    EventType.valueOf(eventType),   // Event type
+                    LocalDate.of(year, month, day), // Event date
+                    location,                       // Location
+                    totalTicketCount,               // Total tickets
+                    soldTicketCount,                // Sold tickets
+                    ticketPrice,                    // Ticket price
+                    new HashSet<>(List.of(artist1, artist2)) // List of artists
             );
         }
-        double profit = event.calculateProfit(expenses); // Вычисление прибыли
+        double profit = event.calculateProfit(expenses); // Profit calculation
         assertEquals(expectedProfit, profit);
     }
 }

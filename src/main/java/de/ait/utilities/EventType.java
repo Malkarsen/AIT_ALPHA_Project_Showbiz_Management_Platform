@@ -1,19 +1,19 @@
 package de.ait.utilities;
 
 public enum EventType {
-    CONCERT,            // Концерт
-    SPORTS,             // Спортивное событие
-    THEATER,            // Театральное представление
-    CONFERENCE,         // Конференция
-    EXHIBITION,         // Выставка
-    FESTIVAL,           // Фестиваль
-    WORKSHOP,           // Мастер-класс, тренинг
-    MOVIE_PREMIERE,     // Премьера фильма
-    CHARITY,            // Благотворительное мероприятие
-    ESPORTS,            // Киберспортивное событие
-    LECTURE,            // Лекция
-    MEETUP,             // Встреча, митап
-    OPEN_AIR,           // Открытое мероприятие
-    CARNIVAL,           // Карнавал
-    BUSINESS_FORUM      // Бизнес-форум
+    CONCERT,            // Concert
+    SPORTS,             // Sports event
+    THEATER,            // Theater performance
+    CONFERENCE,         // Conference
+    EXHIBITION,         // Exhibition
+    FESTIVAL,           // Festival
+    WORKSHOP,           // Workshop, training
+    MOVIE_PREMIERE,     // Movie premiere
+    CHARITY,            // Charity event
+    ESPORTS,            // Esports event
+    LECTURE,            // Lecture
+    MEETUP,             // Meetup
+    OPEN_AIR,           // Open-air event
+    CARNIVAL,           // Carnival
+    BUSINESS_FORUM      // Business forum
 }
