@@ -41,8 +41,8 @@ public class CastingManager {
         }
         else {
             castings.put(casting.getId(), casting);
-            System.out.println("Casting was added: " + casting.getName());
-            log.info("Casting was added: " + casting.getName());
+            System.out.println("Casting was added: " + casting.getId());
+            log.info("Casting was added: " + casting.getId());
         }
     }
 

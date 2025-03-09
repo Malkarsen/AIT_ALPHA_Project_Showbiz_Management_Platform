@@ -12,15 +12,18 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
 public class CastingTest {
 
     private Casting casting;
     private Participant participant;
+    LocalDate newDate = LocalDate.now().plusDays(30); // Need a save result
+    LocalDate castingDate = LocalDate.of(1000, 10, 10);
 
     @BeforeEach
     void setUp() {
-        casting = new Casting("j123", "Actor casting", "Actors casting for Matrix", "Hollywood", LocalDate.now().plusDays(30));
-        participant = new Participant("j123", "Anton", ParticipantStatus.NEW);
+        casting = new Casting("j123", "Actor casting", "Actors casting for Matrix", castingDate, newDate);
+        participant = new Participant("j123", ParticipantStatus.NEW);
     }
 
     @Test
@@ -41,27 +44,27 @@ public class CastingTest {
 
     @Test
     void constructorTestShouldReturnExceptionWithIdNull() {
-        assertThrows(IllegalArgumentException.class, () -> new Casting(null, "Casting 1", "bla", "bla", LocalDate.now().plusDays(30)));
+        assertThrows(IllegalArgumentException.class, () -> new Casting(null, "Casting 1", "bla", castingDate, newDate));
     }
 
     @Test
     void constructorTestShouldReturnExceptionWithNameNull() {
-        assertThrows(IllegalArgumentException.class, () -> new Casting("j123", null, "bla", "bla", LocalDate.now().plusDays(30)));
+        assertThrows(IllegalArgumentException.class, () -> new Casting("j123", null, "bla", castingDate, newDate));
     }
 
     @Test
     void constructorTestShouldReturnExceptionWithDescriptionNull() {
-        assertThrows(IllegalArgumentException.class, () -> new Casting("j123", "Casting 1", null, "bla", LocalDate.now().plusDays(30)));
+        assertThrows(IllegalArgumentException.class, () -> new Casting("j123", "Casting 1", null, castingDate, newDate));
     }
 
     @Test
     void constructorTestShouldReturnExceptionWithLocationNull() {
-        assertThrows(IllegalArgumentException.class, () -> new Casting("j123", "Casting 1", "bla", null, LocalDate.now().plusDays(30)));
+        assertThrows(IllegalArgumentException.class, () -> new Casting("j123", "Casting 1", "bla", null, newDate));
     }
 
     @Test
     void constructorTestShouldReturnExceptionWithDateNull() {
-        assertThrows(IllegalArgumentException.class, () -> new Casting("j123", "Casting 1", "bla", "bla", null));
+        assertThrows(IllegalArgumentException.class, () -> new Casting("j123", "Casting 1", "bla", castingDate, newDate));
     }
 
     @Test

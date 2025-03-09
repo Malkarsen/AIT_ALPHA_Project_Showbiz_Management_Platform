@@ -91,8 +91,8 @@ public class CastingManagerApp {
     private static Participant buildParticipant() {
         scanner.nextLine();
 
-        System.out.println("Enter Participant Id: ");
-        String id = scanner.nextLine().trim();
+        //System.out.println("Enter Participant Id: ");
+        //String id = scanner.nextLine().trim();
         System.out.println("Enter Participant Name: ");
         String name = scanner.nextLine().trim();
         System.out.println("Enter Participant Status (NEW, IN_PROGRESS, REJECTED_CANDIDATE, APPROVED_CANDIDATE): ");
@@ -100,7 +100,7 @@ public class CastingManagerApp {
 
         Participant participant = null;
         try {
-            participant = new Participant(id, name, ParticipantStatus.valueOf(status));
+            participant = new Participant(name, ParticipantStatus.valueOf(status));
         }
         catch (IllegalArgumentException exception) {
             System.out.println("Failed participant creation");
@@ -113,8 +113,8 @@ public class CastingManagerApp {
     private static Casting buildCasting() {
         scanner.nextLine();
 
-        System.out.println("Enter Casting Id: ");
-        String id = scanner.nextLine().trim();
+        //System.out.println("Enter Casting Id: ");
+        //String id = scanner.nextLine().trim();
         System.out.println("Enter Casting name: ");
         String name = scanner.nextLine().trim();
         System.out.println("Enter Casting description: ");
@@ -125,10 +125,14 @@ public class CastingManagerApp {
         String userCastingDate = scanner.nextLine().trim();
         DateTimeFormatter formatterUser = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate castingDate = LocalDate.parse(userCastingDate, formatterUser);
+        System.out.println("Enter Casting new date(dd.MM.yyyy): ");
+        String userNewDate = scanner.nextLine().trim();
+        LocalDate newDate = LocalDate.parse(userCastingDate, formatterUser);
+
 
         Casting casting = null;
         try {
-            casting = new Casting(id, name, description, location, castingDate);
+            casting = new Casting(name, description, location, castingDate, newDate);
         }
         catch (IllegalArgumentException exception) {
             System.out.println("Failed Casting creation");

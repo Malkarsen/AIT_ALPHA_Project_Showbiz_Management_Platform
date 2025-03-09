@@ -6,6 +6,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.UUID;
+
 /**
  * Класс Participant представляет участника с уникальным идентификатором, именем и статусом.
  * Использует Lombok для автоматической генерации геттеров и метода toString.
@@ -16,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @ToString
 public class Participant {
     /** Уникальный идентификатор участника */
-    private String id;
+    private final String id;
 
     /** Имя участника */
     private String name;
@@ -28,18 +30,13 @@ public class Participant {
     /**
      * Создает новый объект участника.
      *
-     * @param id     Уникальный идентификатор участника
      * @param name   Имя участника
      * @param status Статус участника
      */
 
 
-    public Participant(String id, String name, ParticipantStatus status) {
-        if (id == null || id.isEmpty()) {
-            System.out.println("Incorrect participant id");
-            log.error("Incorrect participant id");
-            throw new IllegalArgumentException("Incorrect participant id");
-        }
+    public Participant(String name, ParticipantStatus status) {
+
         if (name == null || name.isEmpty()) {
             System.out.println("Incorrect participant name");
             log.error("Incorrect participant name");
@@ -50,7 +47,7 @@ public class Participant {
             log.error("Incorrect participant id");
             throw new IllegalArgumentException("Incorrect participant id");
         }
-        this.id = id;
+        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,16); // Generate a unique identifier
         this.name = name;
         this.status = status;
     }

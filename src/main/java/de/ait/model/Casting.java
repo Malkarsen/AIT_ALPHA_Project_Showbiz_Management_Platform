@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Класс {@code Casting} представляет собой кастинг с участниками.
@@ -27,7 +28,7 @@ import java.util.Map;
 @Getter
 @ToString
 public class Casting {
-    private String id;
+    private final String id;
     private String name;
     private String description;
     private String location;
@@ -36,20 +37,17 @@ public class Casting {
 
     /**
      * Создает новый объект {@code Casting}.
-     *
+     * <p>
      * Creates a new {@code Casting} object.
      *
-     * @param id уникальный идентификатор кастинга / unique ID of the casting
-     * @param name название кастинга / name of the casting
+     * @param name        название кастинга / name of the casting
      * @param description описание кастинга / description of the casting
-     * @param location местоположение кастинга / location of the casting
+     * @param location    местоположение кастинга / location of the casting
+     * @param castingDate дата кастинга / casting date
+     * @param newDate
      */
-    public Casting(String id, String name, String description, String location, LocalDate castingDate) {
-        if (id == null || id.isEmpty()) {
-            System.out.println("Incorrect Casting id");
-            log.error("Incorrect Casting id");
-            throw new IllegalArgumentException("Incorrect Casting id");
-        }
+    public Casting(String name, String description, String location, LocalDate castingDate, LocalDate newDate) {
+
         if (name == null || name.isEmpty()) {
             System.out.println("Incorrect Casting name");
             log.error("Incorrect Casting name");
@@ -70,12 +68,13 @@ public class Casting {
             log.error("Incorrect Casting date");
             throw new IllegalArgumentException("Incorrect Casting date");
         }
-        this.id = id;
+        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,16); // Generate a unique identifier;
         this.name = name;
         this.description = description;
         this.location = location;
         this.castingDate = castingDate;
     }
+
 
     /**
      * Регистрирует нового участника в кастинге.

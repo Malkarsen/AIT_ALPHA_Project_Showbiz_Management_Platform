@@ -13,11 +13,13 @@ public class CastingManagerTest {
 
     private CastingManager manager;
     private Casting casting;
+    LocalDate castingDate = LocalDate.of(1000, 10, 10);
+    LocalDate newDate = LocalDate.now().plusDays(30); // Need a save result
 
     @BeforeEach
     void setUp() {
         manager = new CastingManager();
-        casting = new Casting("j123", "Actor casting", "Actors casting for Matrix", "Hollywood", LocalDate.now().plusDays(30));
+        casting = new Casting("j123", "Actor casting", "Actors casting for Matrix", castingDate, newDate);
     }
 
     @Test

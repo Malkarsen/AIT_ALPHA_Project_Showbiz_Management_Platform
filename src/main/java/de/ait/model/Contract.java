@@ -32,7 +32,7 @@ public class Contract {
         validateDates(startDate, endDate);
         validateTerms(terms);
 
-        this.id = UUID.randomUUID().toString(); // Generate a unique identifier
+        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,16); // Generate a unique identifier
         this.artistName = artistName;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -202,4 +202,5 @@ public class Contract {
                 ", terms='" + terms + '\'' +
                 '}';
     }
+
 }

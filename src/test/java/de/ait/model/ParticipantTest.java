@@ -10,7 +10,7 @@ public class ParticipantTest {
     @Test
     void constructorTest() {
 
-        Participant participant = new Participant("j123", "Anton", ParticipantStatus.NEW);
+        Participant participant = new Participant("j123", ParticipantStatus.NEW);
 
 
         String id = participant.getId();
@@ -24,17 +24,17 @@ public class ParticipantTest {
 
     @Test
     void constructorTestShouldReturnExceptionWithIdNull() {
-        assertThrows(IllegalArgumentException.class, () -> new Participant(null, "Anton", ParticipantStatus.NEW));
+        assertThrows(IllegalArgumentException.class, () -> new Participant(null, ParticipantStatus.NEW));
     }
 
     @Test
     void constructorTestShouldReturnExceptionWithNameNull() {
-        assertThrows(IllegalArgumentException.class, () -> new Participant("j123", null, ParticipantStatus.NEW));
+        assertThrows(IllegalArgumentException.class, () -> new Participant("j123", null));
     }
 
     @Test
     void constructorTestShouldReturnExceptionWithStatusNull() {
-        assertThrows(IllegalArgumentException.class, () -> new Participant("j123", "Anton", null));
+        assertThrows(IllegalArgumentException.class, () -> new Participant("j123", null));
     }
 }
 
