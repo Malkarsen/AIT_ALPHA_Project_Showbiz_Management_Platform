@@ -139,7 +139,7 @@ public class FinanceManagerApp {
     }
 
     private void saveRecordsToFile() {
-        String fileName = "src/main/java/de/ait/files/FinanceRecord.ser"; // .ser extension for serialized files
+        String fileName = "src/main/java/de/ait/files/FinanceRecord.csv";
         System.out.print("Save records to file: " + fileName);
         try {
             financeManager.saveRecordsToFile(fileName);
@@ -151,7 +151,7 @@ public class FinanceManagerApp {
     }
 
     private void loadRecordsFromFile() {
-        String fileName = "src/main/java/de/ait/files/FinanceRecord.ser";
+        String fileName = "src/main/java/de/ait/files/FinanceRecord.csv";
         System.out.print("Load records from file: " + fileName);
         try {
             financeManager.loadRecordsFromFile(fileName);
