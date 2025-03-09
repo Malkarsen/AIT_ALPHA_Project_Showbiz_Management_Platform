@@ -20,7 +20,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Event {
-    private String id; // unique identifier
+    private final String id; // unique identifier
     private String name; // name
     private EventType eventType; // event type
     private LocalDate date; // date
@@ -46,7 +46,7 @@ public class Event {
                  String location,
                  int totalTicketCount,
                  double ticketPrice) {
-        this.id = UUID.randomUUID().toString(); // Generation of unique identifier
+        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,16); // Generation of unique identifier
         this.name = name;
         this.eventType = eventType;
         this.date = date;
@@ -75,7 +75,7 @@ public class Event {
                  int totalTicketCount,
                  int soldTicketCount,
                  double ticketPrice) {
-        this.id = UUID.randomUUID().toString(); // Generation of unique identifier
+        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,16); // Generation of unique identifier
         this.name = name;
         this.eventType = eventType;
         this.date = date;
@@ -106,7 +106,7 @@ public class Event {
                  int soldTicketCount,
                  double ticketPrice,
                  HashSet<String> artistList) {
-        this.id = UUID.randomUUID().toString(); // Generation of unique identifier
+        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,16); // Generation of unique identifier
         this.name = name;
         this.eventType = eventType;
         this.date = date;

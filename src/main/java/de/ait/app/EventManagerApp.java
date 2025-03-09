@@ -38,7 +38,7 @@ public class EventManagerApp {
                         Event selectedEvent = findEventById(eventId);
                         if (selectedEvent != null) {
                             while (runEvent) {
-                                showEventMenu();
+                                showEventMenu();r
                                 choiceEvent = inputChoice();
 
                                 switch (choiceEvent) {

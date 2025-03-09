@@ -16,7 +16,7 @@ import java.util.HashMap;
  */
 @Slf4j
 public class EventManager {
-    private HashMap<String, Event> events; // list of events (String - id, Event - event)
+    private final HashMap<String, Event> events; // list of events (String - id, Event - event)
 
     public EventManager() {
         events = new HashMap<>();
