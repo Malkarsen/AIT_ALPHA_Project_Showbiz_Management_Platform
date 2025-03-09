@@ -1,17 +1,23 @@
 package de.ait.model;
 
 import de.ait.utilities.RecordType;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Slf4j
+@Getter
+@Setter
 public class FinanceRecord implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final String id;
@@ -39,7 +45,7 @@ public class FinanceRecord implements Serializable {
             throw new IllegalArgumentException("Date cannot be in the future");
         }
 
-        this.id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,16); // Generate a unique identifier;
         this.type = type;
         this.amount = amount;
         this.description = description;
@@ -47,40 +53,21 @@ public class FinanceRecord implements Serializable {
         this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     }
 
+    @Serial
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject(); //
         this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     }
 
-    // Геттеры и другие методы
-    public String getId() {
-        return id;
-    }
-
-    public RecordType getType() {
-        return type;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
     @Override
     public String toString() {
-        return "FinanceRecord{" +
-                "id='" + id + '\'' +
-                ", type=" + type +
-                ", amount=" + amount +
-                ", description='" + description + '\'' +
-                ", date=" + date.format(dateFormatter) +
-                '}';
+        final StringBuilder sb = new StringBuilder("FinanceRecord{");
+        sb.append("id='").append(id).append('\'');
+        sb.append(", type=").append(type);
+        sb.append(", amount=").append(amount);
+        sb.append(", description='").append(description).append('\'');
+        sb.append(", date=").append(date);
+        sb.append('}');
+        return sb.toString();
     }
 }
