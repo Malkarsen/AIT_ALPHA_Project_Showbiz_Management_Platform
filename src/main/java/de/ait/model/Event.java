@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -29,6 +30,9 @@ public class Event {
     private int soldTicketCount; // sold ticket count
     private double ticketPrice; // price of one ticket
     HashSet<String> artistList; // list of artists (String - artist name)
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+
 
     /**
      * Creates a new event object when no tickets have been sold yet and the artists are unknown.
@@ -204,7 +208,7 @@ public class Event {
         System.out.println("Identifier: " + id);
         System.out.println("Name: " + name);
         System.out.println("Event type: " + eventType);
-        System.out.println("Date: " + date);
+        System.out.println("Date: " + date.format(dateFormatter));
         System.out.println("Location: " + location);
         System.out.println("Total tickets: " + totalTicketCount);
         System.out.println("Tickets sold: " + soldTicketCount);

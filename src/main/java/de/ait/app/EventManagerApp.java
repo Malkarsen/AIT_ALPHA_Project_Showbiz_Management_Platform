@@ -18,6 +18,8 @@ public class EventManagerApp {
     private static final Scanner scanner = new Scanner(System.in);
     private static final EventManager eventManager = new EventManager();
 
+
+
     public static void main(String[] args) {
         byte choice;
         boolean run = true;
@@ -38,26 +40,45 @@ public class EventManagerApp {
                         Event selectedEvent = findEventById(eventId);
                         if (selectedEvent != null) {
                             while (runEvent) {
-                                showEventMenu();r
+                                showEventMenu();
                                 choiceEvent = inputChoice();
 
                                 switch (choiceEvent) {
                                     case 1 -> printArtistsList(selectedEvent); // Display a list of artists at the event
                                     case 2 -> {
-                                        // Sell tickets
-                                        // TODO Artur Begichev
+                                        // Sell ticket
+                                        System.out.print("Enter the number of tickets to sell: ");
+                                        int ticketsToSell = scanner.nextInt();
+                                        scanner.nextLine();
+                                        try {
+                                            selectedEvent.sellTicket(ticketsToSell);
+                                        } catch (IllegalArgumentException e) {
+                                            System.out.println("Error: " + e.getMessage());
+                                        }
                                     }
                                     case 3 -> {
                                         // Displaying ticket information
-                                        // TODO Artur Begichev
+                                        selectedEvent.printTicketInfo();
                                     }
                                     case 4 -> {
                                         // Add a new artist
-                                        // TODO Artur Begichev
+                                        System.out.print("Enter artist name to add: ");
+                                        String artistName = scanner.nextLine().trim();
+                                        try {
+                                            selectedEvent.addArtist(artistName);
+                                        } catch (IllegalArgumentException e) {
+                                            System.out.println("Error: " + e.getMessage());
+                                        }
                                     }
                                     case 5 -> {
                                         // Delete an artist
-                                        // TODO Artur Begichev
+                                        System.out.print("Enter artist name to remove: ");
+                                        String artistName = scanner.nextLine().trim();
+                                        try {
+                                            selectedEvent.removeArtist(artistName);
+                                        } catch (Exception e) {
+                                            System.out.println("Error: " + e.getMessage());
+                                        }
                                     }
                                     case 6 -> calculateEventProfit(selectedEvent); // Calculate the profit
                                     case 7 -> selectedEvent.printEventInfo(); // Display all event information
@@ -235,7 +256,7 @@ public class EventManagerApp {
 
     private static Event findEventById(String eventId) {
         try {
-            return eventManager.getEventById(eventId);
+            return EventManagerApp.eventManager.getEventById(eventId);
         } catch (EventIsNotInListException exception) {
             System.out.println("Event not found: " + exception.getMessage());
             log.error("Event not found: {}", exception.getMessage());

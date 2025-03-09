@@ -16,16 +16,15 @@ import java.util.UUID;
 @Slf4j
 @Getter
 @Setter
-public class FinanceRecord implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class FinanceRecord {
+
 
     private final String id;
     private final RecordType type;
     private double amount;
     private final String description;
     private final LocalDate date;
-    private transient DateTimeFormatter dateFormatter;
+    private static DateTimeFormatter dateFormatter;
 
     public FinanceRecord(RecordType type, double amount, String description, LocalDate date) {
         if (type == null) {
@@ -45,19 +44,14 @@ public class FinanceRecord implements Serializable {
             throw new IllegalArgumentException("Date cannot be in the future");
         }
 
-        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,16); // Generate a unique identifier;
+        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 16); // Generate a unique identifier;
         this.type = type;
         this.amount = amount;
         this.description = description;
         this.date = date;
-        this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     }
 
-    @Serial
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject(); //
-        this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    }
 
     @Override
     public String toString() {
@@ -66,7 +60,7 @@ public class FinanceRecord implements Serializable {
         sb.append(", type=").append(type);
         sb.append(", amount=").append(amount);
         sb.append(", description='").append(description).append('\'');
-        sb.append(", date=").append(date);
+        sb.append(", date=").append(date.format(dateFormatter));
         sb.append('}');
         return sb.toString();
     }
