@@ -17,8 +17,8 @@ import java.util.Map;
  * The {@code CastingManager} class manages castings ({@link Casting}).
  * It allows registering castings, searching for them by ID, and displaying a list of all castings.
  *
- * @author ВашеИмя / YourName
- * @version 1.0
+ * @author Anton Cheban
+ * @version 1.1
  */
 @Slf4j
 @Getter

@@ -96,7 +96,7 @@ public class CastingManagerApp {
         System.out.println("Enter Participant Name: ");
         String name = scanner.nextLine().trim();
         System.out.println("Enter Participant Status (NEW, IN_PROGRESS, REJECTED_CANDIDATE, APPROVED_CANDIDATE): ");
-        String status = scanner.nextLine().trim();
+        String status = scanner.nextLine().trim().toUpperCase();
 
         Participant participant = null;
         try {
@@ -144,7 +144,7 @@ public class CastingManagerApp {
         System.out.println("Enter Participant Id: ");
         String participantId = scanner.nextLine().trim();
         System.out.println("Enter new status(NEW, IN_PROGRESS, REJECTED_CANDIDATE, APPROVED_CANDIDATE): ");
-        String newStatus = scanner.nextLine().trim();
+        String newStatus = scanner.nextLine().trim().toUpperCase();
 
         try {
             casting.updateParticipantStatus(participantId, ParticipantStatus.valueOf(newStatus));
