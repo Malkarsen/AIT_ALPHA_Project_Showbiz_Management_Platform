@@ -1,6 +1,7 @@
 package de.ait.core;
 
 import de.ait.model.Casting;
+import de.ait.repository.CastingManagerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,14 +12,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CastingManagerTest {
 
-    private CastingManager manager;
+    private CastingManagerRepository manager;
     private Casting casting;
     LocalDate castingDate = LocalDate.of(1000, 10, 10);
     LocalDate newDate = LocalDate.now().plusDays(30); // Need a save result
 
     @BeforeEach
     void setUp() {
-        manager = new CastingManagerImpl();
+        manager = new CastingManager();
         casting = new Casting("j123", "Actor casting", "Actors casting for Matrix", castingDate, newDate);
     }
 
