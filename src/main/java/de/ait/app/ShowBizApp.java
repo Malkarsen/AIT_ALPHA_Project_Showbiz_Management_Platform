@@ -3,6 +3,7 @@ package de.ait.app;
 import de.ait.core.*;
 import de.ait.model.*;
 import de.ait.repository.CastingManagerRepository;
+import de.ait.repository.ContractManagerRepository;
 import de.ait.utilities.*;
 import de.ait.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,7 @@ public class ShowBizApp {
     private static final EventManager eventManager = new EventManager();
     private static final FinanceManager financeManager = new FinanceManager();
     private static final CastingManagerRepository castingManager = new CastingManager();
-    private static final ContractManager contractManager = new ContractManager();
+    private static final ContractManagerRepository contractManager = new ContractManager();
 
     public static void main(String[] args) throws EventIsNotInListException, EventAlreadyInListException {
         boolean run = true;
