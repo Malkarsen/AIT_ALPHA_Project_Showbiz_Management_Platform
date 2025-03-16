@@ -1,6 +1,7 @@
 package de.ait.service;
 
 import de.ait.model.Contract;
+import de.ait.repository.ContractManagerRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
  * It provides methods for adding, displaying, and checking contracts.
  */
 @Slf4j
-public class ContractManager {
+public class ContractManager implements ContractManagerRepository {
     private final List<Contract> contracts; // Using final since the collection itself does not change
 
     /**
@@ -31,6 +32,7 @@ public class ContractManager {
      *                 If the provided contract is null, an error message is logged, and an exception is thrown.
      */
 
+    @Override
     public void addContract(Contract contract) {
         if (contract == null) {
             log.error("Error: Cannot add a null contract.");
@@ -45,6 +47,7 @@ public class ContractManager {
      * If the list is empty, a corresponding message is displayed.
      */
 
+    @Override
     public void displayAllContracts() {
         if (contracts.isEmpty()) {
             log.info("The contract list is empty.");
@@ -61,6 +64,7 @@ public class ContractManager {
      * @return a copy of the contract list to prevent external modifications.
      */
 
+    @Override
     public List<Contract> getContracts() {
         return new ArrayList<>(contracts);
     }
@@ -70,6 +74,7 @@ public class ContractManager {
      * Displays such contracts in the console. If none are found, an appropriate message is displayed.
      */
 
+    @Override
     public void checkExpiringContracts() {
         LocalDate today = LocalDate.now();
         LocalDate threshold = today.plusDays(29);
@@ -95,6 +100,7 @@ public class ContractManager {
      * Calls {@link #checkExpiringContracts()} to perform the check.
      */
 
+    @Override
     public void notifyExpiringContracts() {
         log.info("Checking contracts for expiration...");
         System.out.println("Checking contracts for expiration...");
