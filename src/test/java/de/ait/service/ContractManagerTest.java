@@ -1,4 +1,4 @@
-package de.ait.core;
+package de.ait.service;
 
 import de.ait.model.Contract;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package de.ait.core;
+package de.ait.service;
 
 import de.ait.exceptions.EventAlreadyInListException;
 import de.ait.exceptions.EventIsNotInListException;

@@ -1,4 +1,4 @@
-package de.ait.core;
+package de.ait.service;
 
 import de.ait.model.FinanceRecord;
 import de.ait.utilities.RecordType;
@@ -11,21 +11,21 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FinanceManagerTest {
+class FinanceManagerImplTest {
 
-    private FinanceManager financeManager;
+    private FinanceManagerImpl financeManagerImpl;
 
     @BeforeEach
     void setUp() {
-        financeManager = new FinanceManager();
+        financeManagerImpl = new FinanceManagerImpl();
     }
 
     @Test
     void testAddRecord() {
         FinanceRecord record = new FinanceRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.of(2025, 2, 26));
-        financeManager.addRecord(record.getType(), record.getAmount(), record.getDescription(), record.getDate());
+        financeManagerImpl.addRecord(record.getType(), record.getAmount(), record.getDescription(), record.getDate());
 
-        List<FinanceRecord> records = financeManager.getFinanceRecords();
+        List<FinanceRecord> records = financeManagerImpl.getFinanceRecords();
         assertEquals(1, records.size());
 
         FinanceRecord addedRecord = records.get(0);
@@ -37,41 +37,41 @@ class FinanceManagerTest {
 
     @Test
     void testCalculateBalance() {
-        financeManager.addRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.now());
-        financeManager.addRecord(RecordType.EXPENSE, 50.0, "Groceries", LocalDate.now());
+        financeManagerImpl.addRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.now());
+        financeManagerImpl.addRecord(RecordType.EXPENSE, 50.0, "Groceries", LocalDate.now());
 
-        double balance = financeManager.calculateBalance(LocalDate.now().minusDays(1), LocalDate.now().plusDays(1));
+        double balance = financeManagerImpl.calculateBalance(LocalDate.now().minusDays(1), LocalDate.now().plusDays(1));
         assertEquals(50.0, balance);
     }
 
     @Test
     void testCalculateBalance_NoRecords() {
-        double balance = financeManager.calculateBalance(LocalDate.now().minusDays(1), LocalDate.now().plusDays(1));
+        double balance = financeManagerImpl.calculateBalance(LocalDate.now().minusDays(1), LocalDate.now().plusDays(1));
         assertEquals(0.0, balance);
     }
 
     @Test
     void testCalculateBalance_InvalidDateRange() {
-        financeManager.addRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.now());
+        financeManagerImpl.addRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.now());
 
         assertThrows(IllegalArgumentException.class, () -> {
-            financeManager.calculateBalance(LocalDate.now().plusDays(1), LocalDate.now());
+            financeManagerImpl.calculateBalance(LocalDate.now().plusDays(1), LocalDate.now());
         });
     }
 
     @Test
     void testSaveAndLoadRecords() throws IOException {
-        financeManager.addRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.of(2025, 2, 26));
-        financeManager.addRecord(RecordType.EXPENSE, 50.0, "Groceries", LocalDate.of(2025, 2, 26));
+        financeManagerImpl.addRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.of(2025, 2, 26));
+        financeManagerImpl.addRecord(RecordType.EXPENSE, 50.0, "Groceries", LocalDate.of(2025, 2, 26));
 
         String fileName = "src/test/resources/testRecords.ser";
-        financeManager.saveRecordsToFile(fileName);
+        financeManagerImpl.saveRecordsToFile(fileName);
 
-        FinanceManager newFinanceManager = new FinanceManager();
-        newFinanceManager.loadRecordsFromFile(fileName);
+        FinanceManagerImpl newFinanceManagerImpl = new FinanceManagerImpl();
+        newFinanceManagerImpl.loadRecordsFromFile(fileName);
 
-        List<FinanceRecord> originalRecords = financeManager.getFinanceRecords();
-        List<FinanceRecord> loadedRecords = newFinanceManager.getFinanceRecords();
+        List<FinanceRecord> originalRecords = financeManagerImpl.getFinanceRecords();
+        List<FinanceRecord> loadedRecords = newFinanceManagerImpl.getFinanceRecords();
 
         assertEquals(originalRecords.size(), loadedRecords.size());
         for (int i = 0; i < originalRecords.size(); i++) {

@@ -1,4 +1,4 @@
-package de.ait.core;
+package de.ait.service;
 
 import de.ait.model.Casting;
 import de.ait.repository.CastingManagerRepository;

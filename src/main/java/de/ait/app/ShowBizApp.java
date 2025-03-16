@@ -1,6 +1,6 @@
 package de.ait.app;
 
-import de.ait.core.*;
+import de.ait.service.*;
 import de.ait.model.*;
 import de.ait.repository.CastingManagerRepository;
 import de.ait.utilities.*;
@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class ShowBizApp {
     private static final Scanner scanner = new Scanner(System.in);
     private static final EventManager eventManager = new EventManager();
-    private static final FinanceManager financeManager = new FinanceManager();
+    private static final FinanceManagerImpl FINANCE_MANAGER_IMPL = new FinanceManagerImpl();
     private static final CastingManagerRepository castingManager = new CastingManager();
     private static final ContractManager contractManager = new ContractManager();
 
@@ -110,7 +110,7 @@ public class ShowBizApp {
             int choice = inputChoice();
             switch (choice) {
                 case 1 -> addFinanceRecord();
-                case 2 -> financeManager.getFinanceRecords().forEach(System.out::println);
+                case 2 -> FINANCE_MANAGER_IMPL.getFinanceRecords().forEach(System.out::println);
                 case 3 -> run = false;
                 default -> System.out.println("Invalid choice. Try again.");
             }
@@ -128,7 +128,7 @@ public class ShowBizApp {
         System.out.print("Enter Date (dd.MM.yyyy): ");
         LocalDate date = LocalDate.parse(scanner.nextLine().trim(), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 
-        financeManager.addRecord(type, amount, description, date);
+        FINANCE_MANAGER_IMPL.addRecord(type, amount, description, date);
     }
 
     private static void manageCastings() {

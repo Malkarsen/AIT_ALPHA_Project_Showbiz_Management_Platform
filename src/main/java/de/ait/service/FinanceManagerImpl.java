@@ -1,6 +1,7 @@
-package de.ait.core;
+package de.ait.service;
 
 import de.ait.model.FinanceRecord;
+import de.ait.repository.FinanceManagerRepository;
 import de.ait.utilities.RecordType;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,13 +18,13 @@ import java.util.List;
  * It allows adding, saving, loading, and calculating financial balances.
  */
 @Slf4j
-public class FinanceManager {
+public class FinanceManagerImpl implements FinanceManagerRepository {
     private List<FinanceRecord> financeRecords;
 
     /**
      * Initializes FinanceManager with an empty list of financial records.
      */
-    public FinanceManager() {
+    public FinanceManagerImpl() {
         this.financeRecords = new ArrayList<>();
         log.info("FinanceManager initialized. An empty list of financial records created.");
     }
@@ -36,6 +37,7 @@ public class FinanceManager {
      * @param description A brief description of the record.
      * @param date        The date of the record.
      */
+    @Override
     public void addRecord(RecordType type, double amount, String description, LocalDate date) {
         FinanceRecord record = new FinanceRecord(type, amount, description, date);
         financeRecords.add(record);
@@ -50,6 +52,7 @@ public class FinanceManager {
      * @return The balance calculated as income minus expenses.
      * @throws IllegalArgumentException If the start date is after the end date.
      */
+    @Override
     public double calculateBalance(LocalDate startDate, LocalDate endDate) {
         if (startDate.isAfter(endDate)) {
             log.error("Invalid date range: startDate {} is after endDate {}", startDate, endDate);
@@ -79,6 +82,7 @@ public class FinanceManager {
      * @param fileName The path of the file to save the records.
      * @throws IOException If an error occurs while writing to the file.
      */
+    @Override
     public void saveRecordsToFile(String fileName) throws IOException {
         if (financeRecords.isEmpty()) {
             log.warn("The financial records list is empty. Nothing will be saved.");
@@ -111,6 +115,7 @@ public class FinanceManager {
      * @param fileName The path of the file to load the records from.
      * @throws IOException If an error occurs while reading the file.
      */
+    @Override
     public void loadRecordsFromFile(String fileName) throws IOException {
         Path filePath = Paths.get(fileName);
         if (!Files.exists(filePath)) {
@@ -153,6 +158,7 @@ public class FinanceManager {
      *
      * @return A list of financial records.
      */
+    @Override
     public List<FinanceRecord> getFinanceRecords() {
         log.debug("Returning a copy of the financial records list.");
         return new ArrayList<>(financeRecords);
