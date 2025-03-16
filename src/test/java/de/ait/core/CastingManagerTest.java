@@ -18,7 +18,7 @@ public class CastingManagerTest {
 
     @BeforeEach
     void setUp() {
-        manager = new CastingManager();
+        manager = new CastingManagerImpl();
         casting = new Casting("j123", "Actor casting", "Actors casting for Matrix", castingDate, newDate);
     }
 

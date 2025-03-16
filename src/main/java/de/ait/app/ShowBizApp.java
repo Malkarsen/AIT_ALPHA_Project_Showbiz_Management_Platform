@@ -6,10 +6,8 @@ import de.ait.utilities.*;
 import de.ait.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 @Slf4j
@@ -17,7 +15,7 @@ public class ShowBizApp {
     private static final Scanner scanner = new Scanner(System.in);
     private static final EventManager eventManager = new EventManager();
     private static final FinanceManager financeManager = new FinanceManager();
-    private static final CastingManager castingManager = new CastingManager();
+    private static final CastingManager castingManager = new CastingManagerImpl();
     private static final ContractManager contractManager = new ContractManager();
 
     public static void main(String[] args) throws EventIsNotInListException, EventAlreadyInListException {
