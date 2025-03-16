@@ -15,10 +15,16 @@ import java.util.Scanner;
 
 @Slf4j
 public class EventManagerApp {
-    private static final Scanner scanner = new Scanner(System.in);
+    private static final Scanner sc = new Scanner(System.in);
     private static final EventManager eventManager = new EventManager();
 
+
     public static void main(String[] args) {
+        EventManagerApp app = new EventManagerApp();
+        app.start();
+    }
+
+    public boolean start() {
         byte choice;
         boolean run = true;
         while (run) {
@@ -44,20 +50,39 @@ public class EventManagerApp {
                                 switch (choiceEvent) {
                                     case 1 -> printArtistsList(selectedEvent); // Display a list of artists at the event
                                     case 2 -> {
-                                        // Sell tickets
-                                        // TODO Artur Begichev
+                                        // Sell ticket
+                                        System.out.print("Enter the number of tickets to sell: ");
+                                        int ticketsToSell = sc.nextInt();
+                                        sc.nextLine();
+                                        try {
+                                            selectedEvent.sellTicket(ticketsToSell);
+                                        } catch (IllegalArgumentException e) {
+                                            System.out.println("Error: " + e.getMessage());
+                                        }
                                     }
                                     case 3 -> {
                                         // Displaying ticket information
-                                        // TODO Artur Begichev
+                                        selectedEvent.printTicketInfo();
                                     }
                                     case 4 -> {
                                         // Add a new artist
-                                        // TODO Artur Begichev
+                                        System.out.print("Enter artist name to add: ");
+                                        String artistName = sc.nextLine().trim();
+                                        try {
+                                            selectedEvent.addArtist(artistName);
+                                        } catch (IllegalArgumentException e) {
+                                            System.out.println("Error: " + e.getMessage());
+                                        }
                                     }
                                     case 5 -> {
                                         // Delete an artist
-                                        // TODO Artur Begichev
+                                        System.out.print("Enter artist name to remove: ");
+                                        String artistName = sc.nextLine().trim();
+                                        try {
+                                            selectedEvent.removeArtist(artistName);
+                                        } catch (Exception e) {
+                                            System.out.println("Error: " + e.getMessage());
+                                        }
                                     }
                                     case 6 -> calculateEventProfit(selectedEvent); // Calculate the profit
                                     case 7 -> selectedEvent.printEventInfo(); // Display all event information
@@ -83,9 +108,11 @@ public class EventManagerApp {
                 }
                 case 4 -> eventManager.displayAllEvents(); // Display all Events
                 case 5 -> {
-                    run = false;
+
                     System.out.println("Exiting the program.");
-                    log.warn("Exiting the program.");
+                    log.warn("Quit the program EventManagerApp");
+                    run = false;
+                    return false; // return signal for general menu APP
                 }
                 default -> {
                     System.out.println("Invalid choice in main menu. Please try again.");
@@ -93,8 +120,9 @@ public class EventManagerApp {
                 }
             }
         }
-        scanner.close();
+        return true;
     }
+
 
     private static void showMenu() {
         System.out.println("Menu: ");
@@ -119,19 +147,19 @@ public class EventManagerApp {
     }
 
     private static byte inputChoice() {
-        byte choice = scanner.nextByte();
-        scanner.nextLine();
+        byte choice = sc.nextByte();
+        sc.nextLine();
         return choice;
     }
 
     private static Event buildEvent() {
         System.out.print("Enter Event name: ");
-        String name = scanner.nextLine().trim();
+        String name = sc.nextLine().trim();
 
         System.out.print("Enter Event type (CONCERT,SPORTS,THEATER,CONFERENCE,EXHIBITION," +
                 "FESTIVAL,WORKSHOP,MOVIE_PREMIERE,CHARITY,ESPORTS," +
                 "LECTURE,MEETUP,OPEN_AIR,CARNIVAL,BUSINESS_FORUM): ");
-        String eventTypeInput = scanner.nextLine().trim().toUpperCase();
+        String eventTypeInput = sc.nextLine().trim().toUpperCase();
         EventType eventType;
         try {
             eventType = EventType.valueOf(eventTypeInput);
@@ -144,7 +172,7 @@ public class EventManagerApp {
         }
 
         System.out.print("Enter Event date (dd.MM.yyyy, e.g., 16.02.2025): ");
-        String dateInput = scanner.nextLine().trim();
+        String dateInput = sc.nextLine().trim();
         LocalDate date;
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -158,24 +186,24 @@ public class EventManagerApp {
         }
 
         System.out.print("Enter Event location: ");
-        String location = scanner.nextLine().trim();
+        String location = sc.nextLine().trim();
 
         System.out.print("Enter total ticket count: ");
-        int totalTicketCount = scanner.nextInt();
-        scanner.nextLine();
+        int totalTicketCount = sc.nextInt();
+        sc.nextLine();
 
         System.out.print("Enter sold ticket count: ");
-        int soldTicketCount = scanner.nextInt();
-        scanner.nextLine();
+        int soldTicketCount = sc.nextInt();
+        sc.nextLine();
 
         System.out.print("Enter ticket price (enter a number with a comma): ");
-        double ticketPrice = scanner.nextDouble();
-        scanner.nextLine();
+        double ticketPrice = sc.nextDouble();
+        sc.nextLine();
 
         HashSet<String> artistList = new HashSet<>();
         System.out.print("Enter Artists (one per line, type '-' to finish): ");
         while (true) {
-            String artist = scanner.nextLine().trim();
+            String artist = sc.nextLine().trim();
             if (artist.equalsIgnoreCase("-")) {
                 break;
             }
@@ -230,12 +258,12 @@ public class EventManagerApp {
 
     private static String inputEventId() {
         System.out.print("Enter the ID of the event: ");
-        return scanner.nextLine();
+        return sc.nextLine();
     }
 
     private static Event findEventById(String eventId) {
         try {
-            return eventManager.getEventById(eventId);
+            return EventManagerApp.eventManager.getEventById(eventId);
         } catch (EventIsNotInListException exception) {
             System.out.println("Event not found: " + exception.getMessage());
             log.error("Event not found: {}", exception.getMessage());
@@ -258,8 +286,8 @@ public class EventManagerApp {
 
     private static void calculateEventProfit(Event event) {
         System.out.print("Enter the expenses of the event: ");
-        double expenses = scanner.nextDouble();
-        scanner.nextLine();
+        double expenses = sc.nextDouble();
+        sc.nextLine();
         System.out.println(event.calculateProfit(expenses));
     }
 }

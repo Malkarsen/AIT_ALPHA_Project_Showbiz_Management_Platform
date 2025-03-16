@@ -39,6 +39,10 @@ public class FinanceManagerImpl implements FinanceManagerRepository {
      */
     @Override
     public void addRecord(RecordType type, double amount, String description, LocalDate date) {
+            if (date.isAfter(LocalDate.now())) {
+                log.error("Attempt to add a record with a future date: {}", date);
+                throw new IllegalArgumentException("Date cannot be in the future");
+            }
         FinanceRecord record = new FinanceRecord(type, amount, description, date);
         financeRecords.add(record);
         log.info("New record added: {}", record);
@@ -140,6 +144,12 @@ public class FinanceManagerImpl implements FinanceManagerRepository {
                     double amount = Double.parseDouble(fields[1]);
                     String description = fields[2];
                     LocalDate date = LocalDate.parse(fields[3]);
+
+                    // Checking to the future date
+                    if (date.isAfter(LocalDate.now())) {
+                        log.warn("Skipping record with a future date: {}", date);
+                        continue; // Skip record if date in future
+                    }
 
                     records.add(new FinanceRecord(type, amount, description, date));
                 }

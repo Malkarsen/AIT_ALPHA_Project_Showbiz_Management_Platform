@@ -8,28 +8,35 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+
 @Slf4j
 
 public class ContractManagerApp {
 
-    private static final Scanner scanner = new Scanner(System.in);
-    private static final ContractManager manager = new ContractManager();
+    private static final Scanner sc = new Scanner(System.in);
+    private static final ContractManager contraсtManager = new ContractManager();
     private static boolean runProgram = true;
 
     public static void main(String[] args) {
+        ContractManagerApp app = new ContractManagerApp();
+        app.start();
+    }
+
+    public boolean start() {
         while (runProgram) {
             showMenu();
-            byte choice = scanner.nextByte();
-            scanner.nextLine();
+            byte choice = sc.nextByte();
+            sc.nextLine();
 
             switch (choice) {
                 case 1 -> createNewContract();
                 case 2 -> manageExistingContract();
-                case 3 -> manager.displayAllContracts();
+                case 3 -> contraсtManager.displayAllContracts();
                 case 4 -> {
                     runProgram = false;
-                    log.info("Program terminated by user.");
+                    log.info("Quit the program ContractManagerApp");
                     System.out.println("Exiting the program.");
+                    return false;
                 }
                 default -> {
                     System.out.println("Invalid input. Please try again.");
@@ -37,13 +44,14 @@ public class ContractManagerApp {
                 }
             }
         }
+        return true;
     }
 
     private static void createNewContract() {
         try {
             Contract contract = buildContract();
             if (contract != null) {
-                manager.addContract(contract);
+                contraсtManager.addContract(contract);
             } else {
                 log.warn("Failed to create contract due to invalid data.");
             }
@@ -58,7 +66,7 @@ public class ContractManagerApp {
 
     private static void manageExistingContract() {
         System.out.println("Enter contract ID to manage:");
-        String contractId = scanner.nextLine().trim();
+        String contractId = sc.nextLine().trim();
         Contract contract = findContractById(contractId);
 
         if (contract == null) {
@@ -70,8 +78,8 @@ public class ContractManagerApp {
         boolean runContractMenu = true;
         while (runContractMenu) {
             showContractMenu();
-            byte choice = scanner.nextByte();
-            scanner.nextLine(); // Clear buffer
+            byte choice = sc.nextByte();
+            sc.nextLine(); // Clear buffer
 
             switch (choice) {
                 case 1 -> updateContractTerms(contract);
@@ -91,15 +99,15 @@ public class ContractManagerApp {
 
     private static Contract buildContract() {
         System.out.println("Enter artist's name:");
-        String artistName = scanner.nextLine().trim();
+        String artistName = sc.nextLine().trim();
 
         System.out.println("Enter contract start date (dd.MM.yyyy):");
-        String startDateInput = scanner.nextLine().trim();
+        String startDateInput = sc.nextLine().trim();
         System.out.println("Enter contract end date (dd.MM.yyyy):");
-        String endDateInput = scanner.nextLine().trim();
+        String endDateInput = sc.nextLine().trim();
 
         System.out.println("Enter contract terms:");
-        String terms = scanner.nextLine().trim();
+        String terms = sc.nextLine().trim();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate startDate = LocalDate.parse(startDateInput, formatter);
@@ -115,7 +123,7 @@ public class ContractManagerApp {
     }
 
     private static Contract findContractById(String contractId) {
-        return manager.getContracts().stream()
+        return contraсtManager.getContracts().stream()
                 .filter(contract -> contract.getId().equals(contractId))
                 .findFirst()
                 .orElse(null);
@@ -123,7 +131,7 @@ public class ContractManagerApp {
 
     private static void updateContractTerms(Contract contract) {
         System.out.println("Enter new contract terms:");
-        String newTerms = scanner.nextLine().trim();
+        String newTerms = sc.nextLine().trim();
 
         try {
             contract.setTerms(newTerms);

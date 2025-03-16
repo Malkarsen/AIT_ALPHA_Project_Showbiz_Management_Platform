@@ -40,7 +40,8 @@ public class FinanceRecord {
             throw new IllegalArgumentException("Description cannot be empty");
         }
         if (date == null || date.isAfter(LocalDate.now())) {
-            log.error("Error: Invalid date (date={}): date cannot be in the future", date);
+
+            log.error("Error: Invalid date (date={}): date cannot be in the future", date.format(dateFormatter));
             throw new IllegalArgumentException("Date cannot be in the future");
         }
 

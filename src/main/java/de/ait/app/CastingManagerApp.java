@@ -1,5 +1,6 @@
 package de.ait.app;
 
+import de.ait.FinanceManagerApp;
 import de.ait.service.CastingManager;
 import de.ait.model.Casting;
 import de.ait.model.Participant;
@@ -11,27 +12,32 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+
 @Slf4j
 
 public class CastingManagerApp {
-    private static Scanner scanner = new Scanner(System.in);
-    private static CastingManager manager = new CastingManager();
+    private static final Scanner sc = new Scanner(System.in);
+    private static final CastingManager castingManager = new CastingManager();
     private static Casting casting;
     private static boolean runCasting;
 
-    public static void main(String[] args) throws NoRegisteredException {
+    public static void main(String[] args) {
+        CastingManagerApp app = new CastingManagerApp();
+        app.start();
+    }
+
+    public boolean start() {
         byte choice = 0;
         boolean run = true;
         while (run) {
             showMenu();
-            choice = scanner.nextByte();
+            choice = sc.nextByte();
             switch (choice) {
                 case 1 -> {
                     try {
                         casting = buildCasting();
-                        manager.registerCasting(casting);
-                    }
-                    catch (DateTimeException exception) {
+                        castingManager.registerCasting(casting);
+                    } catch (DateTimeException exception) {
                         System.out.println("Date is null or in illegal format!");
                         log.error("Date is null or in illegal format!");
                     }
@@ -42,14 +48,13 @@ public class CastingManagerApp {
                     casting = acceptToFindCasting();
                     while (runCasting) {
                         showCastingMenu();
-                        choiceCasting = scanner.nextByte();
+                        choiceCasting = sc.nextByte();
                         switch (choiceCasting) {
                             case 1 -> {
                                 Participant participant = buildParticipant();
                                 try {
                                     casting.registerParticipant(participant);
-                                }
-                                catch (NoRegisteredException exception) {
+                                } catch (NoRegisteredException exception) {
                                     System.out.println("Participant data entered incorrectly");
                                 }
                             }
@@ -72,37 +77,37 @@ public class CastingManagerApp {
                     }
                 }
                 case 3 -> {
-                    manager.showCastings();
+                    castingManager.showCastings();
                 }
                 case 4 -> {
                     run = false;
                     System.out.println("You are exiting the program");
-                    log.info("Quit the program");
+                    log.info("Quit the program CastingManagerApp");
+                    return false;
                 }
                 default -> {
                     System.out.println("Input is incorrect");
                     log.warn("attempt to incorrect Main menu input");
                 }
             }
-
         }
+        return true;
     }
 
     private static Participant buildParticipant() {
-        scanner.nextLine();
+        sc.nextLine();
 
         //System.out.println("Enter Participant Id: ");
         //String id = scanner.nextLine().trim();
         System.out.println("Enter Participant Name: ");
-        String name = scanner.nextLine().trim();
+        String name = sc.nextLine().trim();
         System.out.println("Enter Participant Status (NEW, IN_PROGRESS, REJECTED_CANDIDATE, APPROVED_CANDIDATE): ");
-        String status = scanner.nextLine().trim().toUpperCase();
+        String status = sc.nextLine().trim().toUpperCase();
 
         Participant participant = null;
         try {
             participant = new Participant(name, ParticipantStatus.valueOf(status));
-        }
-        catch (IllegalArgumentException exception) {
+        } catch (IllegalArgumentException exception) {
             System.out.println("Failed participant creation");
             log.error("Failed participant creation");
         }
@@ -111,49 +116,47 @@ public class CastingManagerApp {
     }
 
     private static Casting buildCasting() {
-        scanner.nextLine();
+        sc.nextLine();
 
         //System.out.println("Enter Casting Id: ");
         //String id = scanner.nextLine().trim();
         System.out.println("Enter Casting name: ");
-        String name = scanner.nextLine().trim();
+        String name = sc.nextLine().trim();
         System.out.println("Enter Casting description: ");
-        String description = scanner.nextLine().trim();
+        String description = sc.nextLine().trim();
         System.out.println("Enter Casting location: ");
-        String location = scanner.nextLine().trim();
+        String location = sc.nextLine().trim();
         System.out.println("Enter Casting date(dd.MM.yyyy): ");
-        String userCastingDate = scanner.nextLine().trim();
+        String userCastingDate = sc.nextLine().trim();
         DateTimeFormatter formatterUser = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate castingDate = LocalDate.parse(userCastingDate, formatterUser);
         System.out.println("Enter Casting new date(dd.MM.yyyy): ");
-        String userNewDate = scanner.nextLine().trim();
+        String userNewDate = sc.nextLine().trim();
         LocalDate newDate = LocalDate.parse(userCastingDate, formatterUser);
 
 
         Casting casting = null;
         try {
             casting = new Casting(name, description, location, castingDate, newDate);
-        }
-        catch (IllegalArgumentException exception) {
+        } catch (IllegalArgumentException exception) {
             System.out.println("Failed Casting creation");
-            log. error("Failed Casting creation");
+            log.error("Failed Casting creation");
         }
 
         return casting;
     }
 
     private static void acceptToUpdateParticipantStatus() {
-        scanner.nextLine();
+        sc.nextLine();
 
         System.out.println("Enter Participant Id: ");
-        String participantId = scanner.nextLine().trim();
+        String participantId = sc.nextLine().trim();
         System.out.println("Enter new status(NEW, IN_PROGRESS, REJECTED_CANDIDATE, APPROVED_CANDIDATE): ");
-        String newStatus = scanner.nextLine().trim().toUpperCase();
+        String newStatus = sc.nextLine().trim().toUpperCase();
 
         try {
             casting.updateParticipantStatus(participantId, ParticipantStatus.valueOf(newStatus));
-        }
-        catch (IllegalArgumentException exception) {
+        } catch (IllegalArgumentException exception) {
             System.out.println("New status is null \n");
             log.error("attempt enter incorrect status");
 
@@ -161,11 +164,11 @@ public class CastingManagerApp {
     }
 
     private static Casting acceptToFindCasting() {
-        scanner.nextLine();
+        sc.nextLine();
 
         System.out.println("Enter Casting Id: ");
-        String castingId = scanner.nextLine().trim();
-        casting = manager.findCasting(castingId);
+        String castingId = sc.nextLine().trim();
+        casting = castingManager.findCasting(castingId);
 
         if (casting == null) {
             System.out.println("No casting found with such id");

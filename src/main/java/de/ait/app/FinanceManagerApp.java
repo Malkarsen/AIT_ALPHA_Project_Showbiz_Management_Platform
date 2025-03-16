@@ -1,6 +1,6 @@
 package de.ait;
 
-import de.ait.service.FinanceManager;
+import de.ait.service.FinanceManagerImpl;
 import de.ait.utilities.RecordType;
 import lombok.extern.slf4j.Slf4j;
 
@@ -8,27 +8,25 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 @Slf4j
 public class FinanceManagerApp {
 
-    private FinanceManager financeManager;
-    private Scanner sc;
-    private DateTimeFormatter dateFormatter;
+    private static final FinanceManagerImpl financeManager = new FinanceManagerImpl();
+    private static final Scanner sc = new Scanner(System.in);
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    public FinanceManagerApp() {
-        this.financeManager = new FinanceManager();
-        this.sc = new Scanner(System.in);
-        this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    }
 
-    public void start() {
-        boolean running = true;
-        while (running) {
-            printMenu();
-            int choice = sc.nextInt();
-            sc.nextLine(); // Clear buffer after nextInt()
+    public boolean start() {
+        byte choice;
+        boolean run = true;
+        while (run) {
+
+            showMenu();
+            choice = inputChoice();
 
             switch (choice) {
                 case 1 -> addRecord();
@@ -37,9 +35,11 @@ public class FinanceManagerApp {
                 case 4 -> saveRecordsToFile();
                 case 5 -> loadRecordsFromFile();
                 case 6 -> {
-                    running = false;
-                    log.info("Program terminated by user.");
+
+                    log.warn("Quit the program FinanceManagerApp");
                     System.out.println("Exiting the program.");
+                    run = false;
+                    return false; // return signal for general menu APP
                 }
                 default -> {
                     log.warn("Invalid choice. Please try again.");
@@ -47,10 +47,10 @@ public class FinanceManagerApp {
                 }
             }
         }
-        sc.close();
+        return true;
     }
 
-    private void printMenu() {
+    private static void showMenu() {
         System.out.println("1. Add record");
         System.out.println("2. Show all records");
         System.out.println("3. Calculate balance for a period");
@@ -60,7 +60,7 @@ public class FinanceManagerApp {
         System.out.print("Choose an action: ");
     }
 
-    private void addRecord() {
+    private static void addRecord() {
         System.out.print("Enter record type (INCOME/EXPENSE): ");
         String typeStr = sc.nextLine().toUpperCase();
         RecordType type;
@@ -79,6 +79,12 @@ public class FinanceManagerApp {
         } catch (NumberFormatException e) {
             log.warn("Invalid amount format. Enter a number.");
             System.err.println("Invalid amount format. Enter a number.");
+            return;
+        }
+        // checking for positive number
+        if (amount <= 0) {
+            log.warn("Invalid amount entered: {}. Amount must be greater than 0.", amount);
+            System.err.println("Error: Amount must be greater than 0. Please enter a valid amount.");
             return;
         }
 
@@ -100,15 +106,20 @@ public class FinanceManagerApp {
             System.err.println("Invalid date format. Use dd.MM.yyyy");
             return;
         }
-
+        log.debug("Attempting to add record - Type: {}, Amount: {}, Description: {}, Date: {}", type, amount, description, date.format(dateFormatter));
+        if (date.isAfter(LocalDate.now())) {
+            log.warn("User attempted to add a record with a future date: {}", date.format(dateFormatter));
+            System.err.println("Error: The date cannot be in the future. Please enter a valid date.");
+            return; // do not add record and dont call mistake
+        }
         financeManager.addRecord(type, amount, description, date);
     }
 
-    private void displayAllRecords() {
+    private static void displayAllRecords() {
         financeManager.getFinanceRecords().forEach(System.out::println);
     }
 
-    private void calculateBalance() {
+    private static void calculateBalance() {
         System.out.print("Enter start date (dd.MM.yyyy): ");
         LocalDate startDate;
         try {
@@ -135,7 +146,7 @@ public class FinanceManagerApp {
         System.out.println("Balance for the period from " + startDate + " to " + endDate + ": " + balance);
     }
 
-    private void saveRecordsToFile() {
+    private static void saveRecordsToFile() {
         String fileName = "src/main/java/de/ait/files/FinanceRecord.csv";
         System.out.print("Save records to file: " + fileName);
         try {
@@ -147,7 +158,7 @@ public class FinanceManagerApp {
         }
     }
 
-    private void loadRecordsFromFile() {
+    private static void loadRecordsFromFile() {
         String fileName = "src/main/java/de/ait/files/FinanceRecord.csv";
         System.out.print("Load records from file: " + fileName);
         try {
@@ -162,5 +173,17 @@ public class FinanceManagerApp {
     public static void main(String[] args) {
         FinanceManagerApp app = new FinanceManagerApp();
         app.start();
+    }
+
+    private static byte inputChoice() {
+        try {
+            byte choice = sc.nextByte();
+            sc.nextLine();
+            return choice;
+        } catch (NoSuchElementException e) {
+            log.warn("Invalid input");
+            System.out.println("Invalid input");
+            return 0;
+        }
     }
 }
