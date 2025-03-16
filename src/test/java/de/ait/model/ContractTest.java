@@ -94,7 +94,10 @@ public class ContractTest {
 
         Contract notStarted = new Contract("Artist B", LocalDate.now().plusDays(5), LocalDate.now().plusDays(35), "Terms");
         assertEquals(30, notStarted.daysUntilExpiration(), "The days from startDate to endDate must be 30 days");
+    }
 
+    @Test
+    void testSetEndDateToNullThrowsException() {
         // Checking null via throwing an exception
         Exception exception = assertThrows(IllegalArgumentException.class, () -> contract.setEndDate(null));
         assertEquals("Error: Dates cannot be null.", exception.getMessage());
