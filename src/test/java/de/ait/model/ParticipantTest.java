@@ -10,14 +10,12 @@ public class ParticipantTest {
     @Test
     void constructorTest() {
 
-        Participant participant = new Participant("j123", ParticipantStatus.NEW);
+        Participant participant = new Participant("Anton", ParticipantStatus.NEW);
 
 
-        String id = participant.getId();
         String name = participant.getName();
         ParticipantStatus status = participant.getStatus();
 
-        assertEquals("j123", id);
         assertEquals("Anton", name);
         assertEquals(ParticipantStatus.NEW, status);
     }

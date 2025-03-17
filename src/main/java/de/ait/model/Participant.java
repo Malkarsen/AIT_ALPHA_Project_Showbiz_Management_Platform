@@ -47,7 +47,9 @@ public class Participant {
             log.error("Incorrect participant id");
             throw new IllegalArgumentException("Incorrect participant id");
         }
-        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,16); // Generate a unique identifier
+        String numericUUID = UUID.randomUUID().toString().replaceAll("[^0-9]", "");
+        String paddedUUID = String.format("%-16s", numericUUID).replace(' ', '0');
+        this.id = paddedUUID.substring(0, 16); // Generation of unique identifier
         this.name = name;
         this.status = status;
     }

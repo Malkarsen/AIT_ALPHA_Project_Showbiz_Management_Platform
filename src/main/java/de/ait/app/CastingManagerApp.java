@@ -129,14 +129,11 @@ public class CastingManagerApp {
         String userCastingDate = sc.nextLine().trim();
         DateTimeFormatter formatterUser = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate castingDate = LocalDate.parse(userCastingDate, formatterUser);
-        System.out.println("Enter Casting new date(dd.MM.yyyy): ");
-        String userNewDate = sc.nextLine().trim();
-        LocalDate newDate = LocalDate.parse(userCastingDate, formatterUser);
 
 
         Casting casting = null;
         try {
-            casting = new Casting(name, description, location, castingDate, newDate);
+            casting = new Casting(name, description, location, castingDate);
         } catch (IllegalArgumentException exception) {
             System.out.println("Failed Casting creation");
             log.error("Failed Casting creation");

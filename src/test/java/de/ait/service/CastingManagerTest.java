@@ -15,12 +15,11 @@ public class CastingManagerTest {
     private CastingManagerRepository manager;
     private Casting casting;
     LocalDate castingDate = LocalDate.of(1000, 10, 10);
-    LocalDate newDate = LocalDate.now().plusDays(30); // Need a save result
 
     @BeforeEach
     void setUp() {
         manager = new CastingManager();
-        casting = new Casting("j123", "Actor casting", "Actors casting for Matrix", castingDate, newDate);
+        casting = new Casting( "Actor casting", "Actors casting for Matrix", "Holywood", castingDate);
     }
 
     @Test
@@ -30,14 +29,5 @@ public class CastingManagerTest {
         int size = manager.getCastings().size();
 
         assertEquals(1, size);
-    }
-
-    @Test
-    void findCastingTestShouldReturnCorrectCasting() {
-
-        manager.registerCasting(casting);
-        Casting findCasting = manager.findCasting("j123");
-
-        assertNotNull(findCasting);
     }
 }

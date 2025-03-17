@@ -1,7 +1,5 @@
 package de.ait.model;
 
-import de.ait.utilities.ParticipantStatus;
-import de.ait.exceptions.NoRegisteredException;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -44,9 +42,8 @@ public class Casting {
      * @param description описание кастинга / description of the casting
      * @param location    местоположение кастинга / location of the casting
      * @param castingDate дата кастинга / casting date
-     * @param newDate
      */
-    public Casting(String name, String description, String location, LocalDate castingDate, LocalDate newDate) {
+    public Casting(String name, String description, String location, LocalDate castingDate) {
 
         if (name == null || name.isEmpty()) {
             System.out.println("Incorrect Casting name");
@@ -68,43 +65,12 @@ public class Casting {
             log.error("Incorrect Casting date");
             throw new IllegalArgumentException("Incorrect Casting date");
         }
-        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,16); // Generate a unique identifier;
+        String numericUUID = UUID.randomUUID().toString().replaceAll("[^0-9]", "");
+        String paddedUUID = String.format("%-16s", numericUUID).replace(' ', '0');
+        this.id = paddedUUID.substring(0, 16); // Generation of unique identifier
         this.name = name;
         this.description = description;
         this.location = location;
         this.castingDate = castingDate;
     }
-
-
-    /**
-     * Регистрирует нового участника в кастинге.
-     * Если переданный участник {@code null}, регистрация не выполняется.
-     *
-     * Registers a new participant in the casting.
-     * If the provided participant is {@code null}, registration is not performed.
-     *
-     * @param participant участник для регистрации / the participant to register
-     */
-
-
-    /**
-     * Обновляет статус участника.
-     * Если идентификатор участника или новый статус равны {@code null} или пусты, обновление не выполняется.
-     *
-     * Updates the status of a participant.
-     * If the participant ID or new status is {@code null} or empty, the update is not performed.
-     *
-     * @param participantId идентификатор участника / the participant's ID
-     * @param newStatus новый статус участника / the new status of the participant
-     * @return {@code true}, если статус был успешно обновлен; {@code false}, если участник не найден или данные некорректны /
-     *         {@code true} if the status was successfully updated; {@code false} if the participant was not found or data was incorrect
-     */
-
-
-    /**
-     * Выводит всех зарегистрированных участников кастинга.
-     *
-     * Prints all registered participants of the casting.
-     */
-
 }
