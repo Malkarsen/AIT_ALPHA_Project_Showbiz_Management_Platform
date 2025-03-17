@@ -53,9 +53,13 @@ public class FinanceManagerImpl implements FinanceManagerRepository {
             throw new IllegalArgumentException("Date cannot be in the future");
         }
         FinanceRecord record = new FinanceRecord(type, amount, description, date, category);
-        financeRecords.add(record);
-        log.info("New record added: {}", record);
-        saveRecordsToFileSerialized(); // Автоматичне збереження після кожного запису
+        if (!financeRecords.contains(record)) {
+            financeRecords.add(record);
+            log.info("New record added: {}", record);
+            saveRecordsToFileSerialized();
+        } else {
+            log.warn("Attempted to add duplicate record: {}", record);
+        }
     }
 
     /**
@@ -104,7 +108,9 @@ public class FinanceManagerImpl implements FinanceManagerRepository {
         }
 
         Path filePath = Paths.get(fileName);
-        Files.createDirectories(filePath.getParent());
+        if (filePath.getParent() != null) {
+            Files.createDirectories(filePath.getParent());
+        }
 
         try (BufferedWriter writer = Files.newBufferedWriter(filePath)) {
             writer.write("Type,Amount,Category,Description,Date");
@@ -205,7 +211,16 @@ public class FinanceManagerImpl implements FinanceManagerRepository {
             log.error("Error loading records: {}", e.getMessage());
         }
     }
-
+    @Override
+    public void clearRecordsOnExit() {
+        try {
+            Files.deleteIfExists(Paths.get(CSV_FILE));
+            Files.deleteIfExists(Paths.get(SERIALIZED_FILE));
+            log.info("Financial records cleared on exit.");
+        } catch (IOException e) {
+            log.error("Error clearing financial records on exit: {}", e.getMessage());
+        }
+    }
 
     /**
      * Returns a copy of the financial records list.

@@ -16,5 +16,5 @@ public enum CategoryType {
     EXPENSE_STAFF,            // Витрати на персонал
     EXPENSE_TECHNICAL,        // Технічне забезпечення
     EXPENSE_LOGISTICS,        // Логістика (транспорт)
-    EXPENSE_OTHER             // Інші витрати
+    INCOME_SALARY, EXPENSE_FOOD, INCOME_BUSINESS, EXPENSE_RENT, EXPENSE_SPORT, EXPENSE_OTHER             // Інші витрати
 }

@@ -21,4 +21,5 @@ public interface FinanceManagerRepository {
 
     void saveRecordsToFileSerialized();
     void loadRecordsFromFileSerialized();
+    void clearRecordsOnExit();
 }

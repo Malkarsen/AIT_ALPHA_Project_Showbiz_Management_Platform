@@ -1,10 +1,10 @@
 package de.ait.service;
 
 import de.ait.model.FinanceRecord;
+import de.ait.utilities.CategoryType;
 import de.ait.utilities.RecordType;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.*;
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -13,72 +13,95 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FinanceManagerImplTest {
 
-    private FinanceManagerImpl financeManagerImpl;
+    private FinanceManagerImpl financeManager;
+    private static final String CSV_FILE = "src/main/java/de/ait/files/FinanceRecord.csv";
+    private static final String SERIALIZED_FILE = "src/main/java/de/ait/files/FinanceRecord.cer";
+    private static final String TEST_CSV_FILE = "test_finance_records.csv";
+    private static final String TEST_SERIALIZED_FILE = "test_finance_records.cer";
 
     @BeforeEach
     void setUp() {
-        financeManagerImpl = new FinanceManagerImpl();
+        new File (CSV_FILE).delete();
+        new File(SERIALIZED_FILE).delete();
+        new File(TEST_CSV_FILE).delete();
+        new File(TEST_SERIALIZED_FILE).delete();
+        financeManager = new FinanceManagerImpl();
     }
 
     @Test
-    void testAddRecord() {
-        FinanceRecord record = new FinanceRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.of(2025, 2, 26), category);
-        financeManagerImpl.addRecord(record.getType(), record.getAmount(), record.getDescription(), record.getDate());
+    void testAddRecord_ValidData() {
+        financeManager.addRecord(RecordType.INCOME, 1000, "Salary", LocalDate.now(), CategoryType.INCOME_SALARY);
+        List<FinanceRecord> records = financeManager.getFinanceRecords();
 
-        List<FinanceRecord> records = financeManagerImpl.getFinanceRecords();
         assertEquals(1, records.size());
+        assertEquals(1000, records.get(0).getAmount());
+        assertEquals(CategoryType.INCOME_SALARY, records.get(0).getCategory());
+    }
 
-        FinanceRecord addedRecord = records.get(0);
-        assertEquals(record.getType(), addedRecord.getType());
-        assertEquals(record.getAmount(), addedRecord.getAmount());
-        assertEquals(record.getDescription(), addedRecord.getDescription());
-        assertEquals(record.getDate(), addedRecord.getDate());
+    @Test
+    void testAddRecord_InvalidAmount() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                financeManager.addRecord(RecordType.EXPENSE, -50, "Food", LocalDate.now(), CategoryType.EXPENSE_FOOD));
+        assertEquals("Amount must be greater than 0", exception.getMessage());
+    }
+
+    @Test
+    void testAddRecord_FutureDate() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                financeManager.addRecord(RecordType.INCOME, 500, "Future Salary", LocalDate.now().plusDays(1), CategoryType.INCOME_OTHER));
+        assertEquals("Date cannot be in the future", exception.getMessage());
     }
 
     @Test
     void testCalculateBalance() {
-        financeManagerImpl.addRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.now());
-        financeManagerImpl.addRecord(RecordType.EXPENSE, 50.0, "Groceries", LocalDate.now());
+        financeManager.addRecord(RecordType.INCOME, 2000, "Freelance", LocalDate.now(), CategoryType.INCOME_BUSINESS);
+        financeManager.addRecord(RecordType.EXPENSE, 500, "Rent", LocalDate.now(), CategoryType.EXPENSE_RENT);
+        financeManager.addRecord(RecordType.EXPENSE, 300, "Groceries", LocalDate.now(), CategoryType.EXPENSE_FOOD);
 
-        double balance = financeManagerImpl.calculateBalance(LocalDate.now().minusDays(1), LocalDate.now().plusDays(1));
-        assertEquals(50.0, balance);
-    }
-
-    @Test
-    void testCalculateBalance_NoRecords() {
-        double balance = financeManagerImpl.calculateBalance(LocalDate.now().minusDays(1), LocalDate.now().plusDays(1));
-        assertEquals(0.0, balance);
+        double balance = financeManager.calculateBalance(LocalDate.now().minusDays(1), LocalDate.now().plusDays(1));
+        assertEquals(1200, balance);
     }
 
     @Test
     void testCalculateBalance_InvalidDateRange() {
-        financeManagerImpl.addRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.now());
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            financeManagerImpl.calculateBalance(LocalDate.now().plusDays(1), LocalDate.now());
-        });
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                financeManager.calculateBalance(LocalDate.now(), LocalDate.now().minusDays(1)));
+        assertEquals("Start date cannot be after end date", exception.getMessage());
     }
 
     @Test
-    void testSaveAndLoadRecords() throws IOException {
-        financeManagerImpl.addRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.of(2025, 2, 26));
-        financeManagerImpl.addRecord(RecordType.EXPENSE, 50.0, "Groceries", LocalDate.of(2025, 2, 26));
+    void testSaveAndLoadRecords_CSV() throws IOException {
+        financeManager.addRecord(RecordType.INCOME, 1500, "Consulting", LocalDate.now(), CategoryType.INCOME_BUSINESS);
+        financeManager.saveRecordsToFile(TEST_CSV_FILE);
 
-        String fileName = "src/test/resources/testRecords.ser";
-        financeManagerImpl.saveRecordsToFile(fileName);
+        FinanceManagerImpl newManager = new FinanceManagerImpl();
+        newManager.loadRecordsFromFile(TEST_CSV_FILE);
+        List<FinanceRecord> records = newManager.getFinanceRecords();
 
-        FinanceManagerImpl newFinanceManagerImpl = new FinanceManagerImpl();
-        newFinanceManagerImpl.loadRecordsFromFile(fileName);
+        assertEquals(1, records.size());
+        assertEquals(1500, records.get(0).getAmount());
+        assertEquals(CategoryType.INCOME_BUSINESS, records.get(0).getCategory());
+    }
 
-        List<FinanceRecord> originalRecords = financeManagerImpl.getFinanceRecords();
-        List<FinanceRecord> loadedRecords = newFinanceManagerImpl.getFinanceRecords();
+    @Test
+    void testSaveAndLoadRecords_Serialized() {
+        financeManager.addRecord(RecordType.EXPENSE, 200, "Gym", LocalDate.now(), CategoryType.EXPENSE_SPORT);
+        financeManager.saveRecordsToFileSerialized();
 
-        assertEquals(originalRecords.size(), loadedRecords.size());
-        for (int i = 0; i < originalRecords.size(); i++) {
-            assertEquals(originalRecords.get(i).getType(), loadedRecords.get(i).getType());
-            assertEquals(originalRecords.get(i).getAmount(), loadedRecords.get(i).getAmount());
-            assertEquals(originalRecords.get(i).getDescription(), loadedRecords.get(i).getDescription());
-            assertEquals(originalRecords.get(i).getDate(), loadedRecords.get(i).getDate());
-        }
+        FinanceManagerImpl newManager = new FinanceManagerImpl();
+        newManager.loadRecordsFromFileSerialized();
+        List<FinanceRecord> records = newManager.getFinanceRecords();
+
+        assertEquals(1, records.size());
+        assertEquals(200, records.get(0).getAmount());
+        assertEquals(CategoryType.EXPENSE_SPORT, records.get(0).getCategory());
+    }
+
+    @Test
+    void testLoadRecords_FileNotFound() {
+        FinanceManagerImpl newManager = new FinanceManagerImpl();
+        Exception exception = assertThrows(IOException.class, () ->
+                newManager.loadRecordsFromFile("non_existing_file.csv"));
+        assertTrue(exception.getMessage().contains("File not found"));
     }
 }

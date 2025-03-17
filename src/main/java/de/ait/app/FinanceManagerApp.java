@@ -36,7 +36,7 @@ public class FinanceManagerApp {
                 case 4 -> saveRecordsToFile();
                 case 5 -> loadRecordsFromFile();
                 case 6 -> {
-
+                    financeManager.clearRecordsOnExit();
                     log.warn("Quit the program FinanceManagerApp");
                     System.out.println("Exiting the program.");
                     run = false;
