@@ -32,7 +32,11 @@ public class Contract {
         validateDates(startDate, endDate);
         validateTerms(terms);
 
-        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,16); // Generate a unique identifier
+        String numericUUID = UUID.randomUUID().toString().replaceAll("[^0-9]", "");
+        while (numericUUID.length() < 16) {
+            numericUUID += UUID.randomUUID().toString().replaceAll("[^0-9]", "");
+        }
+        this.id = numericUUID.substring(0,16); // Generate a unique identifier
         this.artistName = artistName;
         this.startDate = startDate;
         this.endDate = endDate;

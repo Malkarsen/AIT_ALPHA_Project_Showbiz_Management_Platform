@@ -52,7 +52,7 @@ public class CastingManagerApp {
                             case 1 -> {
                                 Participant participant = buildParticipant();
                                 try {
-                                    casting.registerParticipant(participant);
+                                    castingManager.registerParticipant(participant);
                                 } catch (NoRegisteredException exception) {
                                     System.out.println("Participant data entered incorrectly");
                                 }
@@ -61,7 +61,7 @@ public class CastingManagerApp {
                                 acceptToUpdateParticipantStatus();
                             }
                             case 3 -> {
-                                casting.showParticipants();
+                                castingManager.showParticipants();
                             }
                             case 4 -> {
                                 runCasting = false;
@@ -154,7 +154,7 @@ public class CastingManagerApp {
         String newStatus = sc.nextLine().trim().toUpperCase();
 
         try {
-            casting.updateParticipantStatus(participantId, ParticipantStatus.valueOf(newStatus));
+            castingManager.updateParticipantStatus(participantId, ParticipantStatus.valueOf(newStatus));
         } catch (IllegalArgumentException exception) {
             System.out.println("New status is null \n");
             log.error("attempt enter incorrect status");

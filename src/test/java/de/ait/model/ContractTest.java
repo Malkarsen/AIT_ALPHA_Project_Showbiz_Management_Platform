@@ -17,10 +17,14 @@ public class ContractTest {
 
     @Test
     void testContractCreation() {
-        // Ensure the contract is created with valid parameters
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = LocalDate.now().plusDays(30);
+
         assertNotNull(contract.getId(), "The ID must be generated");
+
+        // Check that the ID consists of exactly 16 digits
+        assertTrue(contract.getId().matches("\\d{16}"), "The ID must be exactly 16 numeric digits");
+
         assertEquals("Artist A", contract.getArtistName(), "The artist's name must match");
         assertEquals(startDate, contract.getStartDate(), "The start date must coincide");
         assertEquals(endDate, contract.getEndDate(), "The end date must coincide");
@@ -77,14 +81,19 @@ public class ContractTest {
 
     @Test
     void testIsActive() {
-        // Check if the contract is active
-        assertTrue(contract.isActive(), "The contract must be active");
+        LocalDate today = LocalDate.now();
 
-        Contract notStarted = new Contract("Artist B", LocalDate.now().plusDays(5), LocalDate.now().plusDays(35), "Terms");
-        assertFalse(notStarted.isActive(), "The contract must not be active before the start date");
+        // A contract that is active right now
+        Contract activeContract = new Contract("Artist Active", today.minusDays(5), today.plusDays(5), "Terms");
+        assertTrue(activeContract.isActive(), "The contract must be active because the current date is inside the validity period.");
 
-        Contract expired = new Contract("Artist C", LocalDate.now().minusDays(10), LocalDate.now().minusDays(1), "Terms");
-        assertFalse(expired.isActive(), "The contract should not be active after the end date");
+        // A contract that has not yet begun
+        Contract futureContract = new Contract("Artist Future", today.plusDays(1), today.plusDays(10), "Terms");
+        assertFalse(futureContract.isActive(), "The contract should not be active as it has not yet started.");
+
+        // A contract that's already expired
+        Contract expiredContract = new Contract("Artist Expired", today.minusDays(10), today.minusDays(1), "Terms");
+        assertFalse(expiredContract.isActive(), "The contract should not be active because it has already expired.");
     }
 
     @Test
