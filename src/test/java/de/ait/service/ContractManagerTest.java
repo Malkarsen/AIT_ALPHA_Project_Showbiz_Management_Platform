@@ -77,10 +77,20 @@ public class ContractManagerTest {
 
     @Test
     void testNotifyExpiringContracts() {
-        // Test notifying about expiring contracts
-        Contract expiringContract = new Contract("Artist D", LocalDate.now().minusDays(5), LocalDate.now().plusDays(5), "Terms");
+        // Creating a contract that's about to expire
+        Contract expiringContract = new Contract("Artist D",
+                LocalDate.now().minusDays(5),
+                LocalDate.now().plusDays(5),
+                "Terms");
+
+        // Adding a contract to the manager
         contractManager.addContract(expiringContract);
 
+        // Get the list of contracts and check that the contract has been added
+        List<Contract> contracts = contractManager.getContracts();
+        assertEquals(1, contracts.size(), "There should be exactly one contract.");
+
+        // Check that the notification method does not raise an exception
         assertDoesNotThrow(() -> contractManager.notifyExpiringContracts());
     }
 }

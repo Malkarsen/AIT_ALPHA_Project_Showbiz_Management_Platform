@@ -2,6 +2,7 @@ package de.ait.service;
 
 import de.ait.model.FinanceRecord;
 import de.ait.repository.FinanceManagerRepository;
+import de.ait.utilities.CategoryType;
 import de.ait.utilities.RecordType;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,14 +21,18 @@ import java.util.List;
 @Slf4j
 public class FinanceManagerImpl implements FinanceManagerRepository {
     private List<FinanceRecord> financeRecords;
+    private static final String CSV_FILE = "src/main/java/de/ait/files/FinanceRecord.csv";
+    private static final String SERIALIZED_FILE = "src/main/java/de/ait/files/FinanceRecord.cer";
 
     /**
      * Initializes FinanceManager with an empty list of financial records.
      */
     public FinanceManagerImpl() {
         this.financeRecords = new ArrayList<>();
-        log.info("FinanceManager initialized. An empty list of financial records created.");
+        loadRecordsFromFileSerialized(); // Автоматичне завантаження при старті
+        log.info("FinanceManager initialized. Loaded {} records.", financeRecords.size());
     }
+
 
     /**
      * Adds a new financial record.
@@ -36,16 +41,21 @@ public class FinanceManagerImpl implements FinanceManagerRepository {
      * @param amount      The monetary amount of the record.
      * @param description A brief description of the record.
      * @param date        The date of the record.
+     * @param category    The type of category (income or expense)
      */
     @Override
-    public void addRecord(RecordType type, double amount, String description, LocalDate date) {
-            if (date.isAfter(LocalDate.now())) {
-                log.error("Attempt to add a record with a future date: {}", date);
-                throw new IllegalArgumentException("Date cannot be in the future");
-            }
-        FinanceRecord record = new FinanceRecord(type, amount, description, date);
+    public void addRecord(RecordType type, double amount, String description, LocalDate date, CategoryType category) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than 0");
+        }
+        if (date.isAfter(LocalDate.now())) {
+            log.error("Attempt to add a record with a future date: {}", date);
+            throw new IllegalArgumentException("Date cannot be in the future");
+        }
+        FinanceRecord record = new FinanceRecord(type, amount, description, date, category);
         financeRecords.add(record);
         log.info("New record added: {}", record);
+        saveRecordsToFileSerialized(); // Автоматичне збереження після кожного запису
     }
 
     /**
@@ -97,12 +107,12 @@ public class FinanceManagerImpl implements FinanceManagerRepository {
         Files.createDirectories(filePath.getParent());
 
         try (BufferedWriter writer = Files.newBufferedWriter(filePath)) {
-            writer.write("Type,Amount,Description,Date");
+            writer.write("Type,Amount,Category,Description,Date");
             writer.newLine();
 
             for (FinanceRecord record : financeRecords) {
                 writer.write(record.getType() + "," + record.getAmount() + "," +
-                        record.getDescription() + "," + record.getDate());
+                        record.getCategory() + "," + record.getDescription() + "," + record.getDate());
                 writer.newLine();
             }
 
@@ -139,11 +149,13 @@ public class FinanceManagerImpl implements FinanceManagerRepository {
                 }
 
                 String[] fields = line.split(",");
-                if (fields.length == 4) {
+                if (fields.length == 5) {
                     RecordType type = RecordType.valueOf(fields[0]);
                     double amount = Double.parseDouble(fields[1]);
-                    String description = fields[2];
-                    LocalDate date = LocalDate.parse(fields[3]);
+                    CategoryType category = CategoryType.valueOf(fields[2]);
+                    String description = fields[3];
+                    LocalDate date = LocalDate.parse(fields[4]);
+
 
                     // Checking to the future date
                     if (date.isAfter(LocalDate.now())) {
@@ -151,7 +163,7 @@ public class FinanceManagerImpl implements FinanceManagerRepository {
                         continue; // Skip record if date in future
                     }
 
-                    records.add(new FinanceRecord(type, amount, description, date));
+                    records.add(new FinanceRecord(type, amount, description, date, category));
                 }
             }
 
@@ -162,6 +174,38 @@ public class FinanceManagerImpl implements FinanceManagerRepository {
             throw e;
         }
     }
+    /**
+     * Saves financial records using serialization.
+     */
+    @Override
+    public void saveRecordsToFileSerialized() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SERIALIZED_FILE))) {
+            oos.writeObject(financeRecords);
+            log.info("Financial records saved to serialized file.");
+        } catch (IOException e) {
+            log.error("Error saving records: {}", e.getMessage());
+        }
+    }
+
+    /**
+     * Loads financial records from serialized file.
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void loadRecordsFromFileSerialized() {
+        File file = new File(SERIALIZED_FILE);
+        if (!file.exists()) {
+            log.warn("No previous financial records found.");
+            return;
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(SERIALIZED_FILE))) {
+            financeRecords = (List<FinanceRecord>) ois.readObject();
+            log.info("Financial records successfully loaded from serialized file.");
+        } catch (IOException | ClassNotFoundException e) {
+            log.error("Error loading records: {}", e.getMessage());
+        }
+    }
+
 
     /**
      * Returns a copy of the financial records list.

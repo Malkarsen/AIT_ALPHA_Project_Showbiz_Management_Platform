@@ -3,6 +3,7 @@ package de.ait.service;
 import de.ait.exceptions.EventAlreadyInListException;
 import de.ait.exceptions.EventIsNotInListException;
 import de.ait.model.Event;
+import de.ait.repository.EventManagerRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -15,10 +16,10 @@ import java.util.HashMap;
  * and displaying a list of all events.
  */
 @Slf4j
-public class EventManager {
+public class EventManagerImpl implements EventManagerRepository {
     private final HashMap<String, Event> events; // list of events (String - id, Event - event)
 
-    public EventManager() {
+    public EventManagerImpl() {
         events = new HashMap<>();
     }
 
@@ -26,6 +27,7 @@ public class EventManager {
      * Returns a copy of the event list.
      * @return Copy of the event list
      */
+    @Override
     public HashMap<String, Event> getEvents() {
         return new HashMap<>(events);
     }
@@ -37,6 +39,7 @@ public class EventManager {
      * @return Event by its unique identifier
      * @throws EventIsNotInListException If the event with this identifier is not found in the list
      */
+    @Override
     public Event getEventById(String eventId) throws EventIsNotInListException {
         if (!events.containsKey(eventId)){
             log.error("Error! This event is not in the list");
@@ -51,6 +54,7 @@ public class EventManager {
      * @param event Event to be added
      * @throws EventAlreadyInListException If an event with this identifier already exists in the list
      */
+    @Override
     public String addEvent(Event event) throws EventAlreadyInListException {
         if (event == null) {
             log.error("Error! Event is null");
@@ -75,6 +79,14 @@ public class EventManager {
             log.error("Invalid ticket count: Ticket count cannot be less than or equal to zero");
             throw new IllegalArgumentException(
                     "Invalid ticket count: Ticket count cannot be less than or equal to zero");
+        } else if (event.getSoldTicketCount() < 0) {
+            log.error("Invalid sold ticket count: Ticket count cannot be less than or equal to zero");
+            throw new IllegalArgumentException(
+                    "Invalid sold ticket count: Ticket count cannot be less than or equal to zero");
+        } else if (event.getTotalTicketCount() < event.getSoldTicketCount()) {
+            log.error("Invalid sold ticket count: Sold ticket count cannot exceed the total number");
+            throw new IllegalArgumentException(
+                    "Invalid sold ticket count: Sold ticket count cannot exceed the total number");
         } else if (event.getTicketPrice() < 0) {
             log.error("Invalid ticket price: Ticket price cannot be less than zero");
             throw new IllegalArgumentException(
@@ -95,6 +107,7 @@ public class EventManager {
      * @param event Event to be removed
      * @throws EventIsNotInListException If the event with this identifier is not found in the list
      */
+    @Override
     public void removeEvent(Event event) throws EventIsNotInListException {
         if (event == null) {
             log.error("Error! Event is null");
@@ -119,6 +132,14 @@ public class EventManager {
             log.error("Invalid ticket count: Ticket count cannot be less than or equal to zero");
             throw new IllegalArgumentException(
                     "Invalid ticket count: Ticket count cannot be less than or equal to zero");
+        } else if (event.getSoldTicketCount() < 0) {
+            log.error("Invalid sold ticket count: Ticket count cannot be less than or equal to zero");
+            throw new IllegalArgumentException(
+                    "Invalid sold ticket count: Ticket count cannot be less than or equal to zero");
+        } else if (event.getTotalTicketCount() < event.getSoldTicketCount()) {
+            log.error("Invalid sold ticket count: Sold ticket count cannot exceed the total number");
+            throw new IllegalArgumentException(
+                    "Invalid sold ticket count: Sold ticket count cannot exceed the total number");
         } else if (event.getTicketPrice() < 0) {
             log.error("Invalid ticket price: Ticket price cannot be less than zero");
             throw new IllegalArgumentException(
@@ -138,6 +159,7 @@ public class EventManager {
      * @param eventId Identifier of the event to be removed
      * @throws EventIsNotInListException If the event with this identifier is not found in the list
      */
+    @Override
     public void removeEventById(String eventId) throws EventIsNotInListException {
         if (!events.containsKey(eventId)){
             log.error("Error! This event is not in the list");
@@ -153,6 +175,7 @@ public class EventManager {
      * Displays a list of all contracts.
      * If the list is empty, an appropriate message is displayed.
      */
+    @Override
     public void displayAllEvents() {
         if (events.isEmpty()) {
             System.out.println("The event list is empty.");
@@ -163,6 +186,7 @@ public class EventManager {
                 System.out.println("--------------------------------");
                 System.out.println("Event "+ count);
                 event.printEventInfo();
+                count++;
             }
         }
     }

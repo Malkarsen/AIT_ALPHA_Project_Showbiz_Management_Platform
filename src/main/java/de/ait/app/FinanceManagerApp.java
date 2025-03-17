@@ -1,6 +1,7 @@
 package de.ait.app;
 
 import de.ait.service.FinanceManagerImpl;
+import de.ait.utilities.CategoryType;
 import de.ait.utilities.RecordType;
 import lombok.extern.slf4j.Slf4j;
 
@@ -112,7 +113,25 @@ public class FinanceManagerApp {
             System.err.println("Error: The date cannot be in the future. Please enter a valid date.");
             return; // do not add record and dont call mistake
         }
-        financeManager.addRecord(type, amount, description, date);
+        // Filter categories by type (income/expense)
+        System.out.println("Select a category:");
+        for (CategoryType cat : CategoryType.values()) {
+            if ((type == RecordType.INCOME && cat.name().startsWith("INCOME_")) ||
+                    (type == RecordType.EXPENSE && cat.name().startsWith("EXPENSE_"))) {
+                System.out.println("- " + cat);
+            }
+        }
+        System.out.print("Enter category: ");
+        String categoryStr = sc.nextLine().toUpperCase();
+        CategoryType category;
+        try {
+            category = CategoryType.valueOf(categoryStr);
+        } catch (IllegalArgumentException e) {
+            log.warn("Invalid category. Using default category EXPENSE_OTHER.");
+            category = (type == RecordType.INCOME) ? CategoryType.INCOME_OTHER : CategoryType.EXPENSE_OTHER;
+        }
+
+        financeManager.addRecord(type, amount, description, date, category);
     }
 
     private static void displayAllRecords() {

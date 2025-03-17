@@ -1,6 +1,7 @@
 package de.ait.app;
 
-import de.ait.service.EventManager;
+import de.ait.repository.EventManagerRepository;
+import de.ait.service.EventManagerImpl;
 import de.ait.exceptions.EventAlreadyInListException;
 import de.ait.exceptions.EventIsNotInListException;
 import de.ait.model.Event;
@@ -16,8 +17,7 @@ import java.util.Scanner;
 @Slf4j
 public class EventManagerApp {
     private static final Scanner sc = new Scanner(System.in);
-    private static final EventManager eventManager = new EventManager();
-
+    private static final EventManagerRepository eventManager = new EventManagerImpl();
 
     public static void main(String[] args) {
         EventManagerApp app = new EventManagerApp();
@@ -155,6 +155,11 @@ public class EventManagerApp {
     private static Event buildEvent() {
         System.out.print("Enter Event name: ");
         String name = sc.nextLine().trim();
+        if (name.isEmpty()) {
+            System.out.println("Invalid name (it is empty). Defaulting to \"No name event\"");
+            log.error("Invalid name (it is empty). Defaulting to \"No name event\"");
+            name = "No name event";
+        }
 
         System.out.print("Enter Event type (CONCERT,SPORTS,THEATER,CONFERENCE,EXHIBITION," +
                 "FESTIVAL,WORKSHOP,MOVIE_PREMIERE,CHARITY,ESPORTS," +
@@ -164,7 +169,7 @@ public class EventManagerApp {
         try {
             eventType = EventType.valueOf(eventTypeInput);
         } catch (IllegalArgumentException exception) {
-            System.out.print("Invalid event type. Defaulting to CONCERT: "
+            System.out.println("Invalid event type. Defaulting to CONCERT: "
                     + exception.getMessage());
             log.error("Invalid event type. Defaulting to CONCERT: {}",
                     exception.getMessage());
@@ -178,7 +183,7 @@ public class EventManagerApp {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
             date = LocalDate.parse(dateInput, formatter);
         } catch (DateTimeParseException exception) {
-            System.out.print("Invalid date format. Defaulting to today’s date: " +
+            System.out.println("Invalid date format. Defaulting to today’s date: " +
                     exception.getMessage());
             log.error("Invalid date format. Defaulting to today’s date: {}",
                     exception.getMessage());
@@ -187,18 +192,44 @@ public class EventManagerApp {
 
         System.out.print("Enter Event location: ");
         String location = sc.nextLine().trim();
+        if (location.isEmpty()) {
+            System.out.println("Invalid location (it is empty). Defaulting to \"No location event\"");
+            log.error("Invalid location (it is empty). Defaulting to \"No location event\"");
+            location = "No location event";
+        }
 
         System.out.print("Enter total ticket count: ");
         int totalTicketCount = sc.nextInt();
         sc.nextLine();
+        if (totalTicketCount <= 0) {
+            System.out.println("Invalid total ticket count (it is less than or equal to 0). Defaulting to 10 ");
+            log.error("Invalid sold ticket count (it is less than or equal to 0). Defaulting to 10");
+            totalTicketCount = 10;
+        }
 
         System.out.print("Enter sold ticket count: ");
         int soldTicketCount = sc.nextInt();
         sc.nextLine();
+        if (soldTicketCount < 0) {
+            System.out.println("Invalid sold ticket count (it is less than 0). Defaulting to 0 ");
+            log.error("Invalid sold ticket count (it is less than 0). Defaulting to 0");
+            soldTicketCount = 0;
+        } else if (soldTicketCount > totalTicketCount) {
+            System.out.println("Incorrect number of tickets sold (it is more than total ticket count). " +
+                    "Defaulting to total ticket count " + totalTicketCount);
+            log.error("Incorrect number of tickets sold (it is more than total ticket count). " +
+                    "Defaulting to total ticket count {}", totalTicketCount);
+            soldTicketCount = totalTicketCount;
+        }
 
         System.out.print("Enter ticket price (enter a number with a comma): ");
         double ticketPrice = sc.nextDouble();
         sc.nextLine();
+        if (ticketPrice < 0) {
+            System.out.println("Invalid ticket price (it is less than 0). Defaulting to 0 ");
+            log.error("Invalid ticket price (it is less than 0). Defaulting to 0");
+            ticketPrice = 0;
+        }
 
         HashSet<String> artistList = new HashSet<>();
         System.out.print("Enter Artists (one per line, type '-' to finish): ");
@@ -214,7 +245,7 @@ public class EventManagerApp {
 
         Event event;
         if (artistList.isEmpty()) {
-            if (soldTicketCount <= 0) {
+            if (soldTicketCount == 0) {
                 event = new Event(name, eventType, date, location,
                         totalTicketCount, ticketPrice);
             } else {

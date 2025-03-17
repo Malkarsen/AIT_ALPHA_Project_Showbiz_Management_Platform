@@ -22,7 +22,7 @@ class FinanceManagerImplTest {
 
     @Test
     void testAddRecord() {
-        FinanceRecord record = new FinanceRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.of(2025, 2, 26));
+        FinanceRecord record = new FinanceRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.of(2025, 2, 26), category);
         financeManagerImpl.addRecord(record.getType(), record.getAmount(), record.getDescription(), record.getDate());
 
         List<FinanceRecord> records = financeManagerImpl.getFinanceRecords();
