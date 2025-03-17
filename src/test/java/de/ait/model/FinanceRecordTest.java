@@ -11,7 +11,7 @@ class FinanceRecordTest {
 
     @Test
     void testFinanceRecordCreation() {
-        FinanceRecord record = new FinanceRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.now());
+        FinanceRecord record = new FinanceRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.now(), category);
 
         assertNotNull(record.getId());
         assertEquals(RecordType.INCOME, record.getType());
@@ -23,21 +23,21 @@ class FinanceRecordTest {
     @Test
     void testFinanceRecordInvalidAmount() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new FinanceRecord(RecordType.INCOME, -100.0, "Salary", LocalDate.now());
+            new FinanceRecord(RecordType.INCOME, -100.0, "Salary", LocalDate.now(), category);
         });
     }
 
     @Test
     void testFinanceRecordInvalidDescription() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new FinanceRecord(RecordType.INCOME, 100.0, "", LocalDate.now());
+            new FinanceRecord(RecordType.INCOME, 100.0, "", LocalDate.now(), category);
         });
     }
 
     @Test
     void testFinanceRecordInvalidDate() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new FinanceRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.now().plusDays(1));
+            new FinanceRecord(RecordType.INCOME, 100.0, "Salary", LocalDate.now().plusDays(1), category);
         });
     }
 }

@@ -1,12 +1,11 @@
 package de.ait.model;
 
+import de.ait.utilities.CategoryType;
 import de.ait.utilities.RecordType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -16,17 +15,23 @@ import java.util.UUID;
 @Slf4j
 @Getter
 @Setter
-public class FinanceRecord {
+public class FinanceRecord implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private final String id;
     private final RecordType type;
     private double amount;
     private final String description;
     private final LocalDate date;
-    private static DateTimeFormatter dateFormatter;
 
-    public FinanceRecord(RecordType type, double amount, String description, LocalDate date) {
+    private CategoryType category; // added category
+
+    private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+
+    public FinanceRecord(RecordType type, double amount, String description, LocalDate date, CategoryType category) {
         if (type == null) {
             log.error("Error: RecordType provided as null");
             throw new IllegalArgumentException("RecordType cannot be null");
@@ -44,13 +49,25 @@ public class FinanceRecord {
             log.error("Error: Invalid date (date={}): date cannot be in the future", date.format(dateFormatter));
             throw new IllegalArgumentException("Date cannot be in the future");
         }
+        if (category == null) {
+            log.error("Error: CategoryType provided as null");
+            throw new IllegalArgumentException("CategoryType cannot be null");
+        }
 
-        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 16); // Generate a unique identifier;
+        this.id = generateNumericUUID(); // Generation of unique identifier
         this.type = type;
         this.amount = amount;
         this.description = description;
         this.date = date;
-        dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        this.category = category;
+    }
+
+    /**
+     * Generates a unique numeric 16-character ID from UUID.
+     */
+    private static String generateNumericUUID() {
+        String numericUUID = UUID.randomUUID().toString().replaceAll("[^0-9]", "");
+        return String.format("%-16s", numericUUID).replace(' ', '0').substring(0, 16);
     }
 
 
@@ -62,6 +79,7 @@ public class FinanceRecord {
         sb.append(", amount=").append(amount);
         sb.append(", description='").append(description).append('\'');
         sb.append(", date=").append(date.format(dateFormatter));
+        sb.append(", category=").append(category);
         sb.append('}');
         return sb.toString();
     }
