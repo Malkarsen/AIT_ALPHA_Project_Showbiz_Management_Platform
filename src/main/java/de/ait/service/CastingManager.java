@@ -1,7 +1,10 @@
 package de.ait.service;
 
+import de.ait.exceptions.NoRegisteredException;
 import de.ait.model.Casting;
+import de.ait.model.Participant;
 import de.ait.repository.CastingManagerRepository;
+import de.ait.utilities.ParticipantStatus;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +28,7 @@ import java.util.Map;
 @Getter
 public class CastingManager implements CastingManagerRepository {
     private Map<String, Casting> castings = new HashMap<>();
+    private Map<String, Participant> participants = new HashMap<>();
 
     /**
      * Регистрирует новый кастинг.
@@ -86,6 +90,48 @@ public class CastingManager implements CastingManagerRepository {
     public void showCastings() {
         for (Map.Entry<String, Casting> entry : castings.entrySet()) {
             System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+        }
+    }
+
+    @Override
+    public void registerParticipant(Participant participant) throws NoRegisteredException {
+        if (participant == null) {
+            System.out.println("Participant is null");
+            log.warn("attempt to registered null");
+            throw new NoRegisteredException("Participant is null");
+        }
+        else {
+            this.participants.put(participant.getId(), participant);
+            System.out.println("New participant was added");
+            log.info("new participant was added");
+        }
+    }
+
+
+    @Override
+    public void updateParticipantStatus(String participantId, ParticipantStatus newStatus) {
+        if (participantId == null || participantId.isEmpty() || newStatus == null) {
+            System.out.println("Participant or new status is null");
+            log.error("Status update is not possible. Participant: {}, Status: {}", participantId, newStatus);
+            throw new IllegalArgumentException("new status is null");
+        } else {
+            if (participants.containsKey(participantId)) {
+                Participant participant = this.participants.get(participantId);
+                participant.setStatus(newStatus);
+                log.info("Status of Participant {} was updated to {}", participantId, newStatus);
+            } else {
+                System.out.println("This participant has not yet registered");
+                log.warn("attempt update states for not registered participant");
+            }
+        }
+    }
+
+
+    @Override
+    public void showParticipants() {
+
+        for (Participant participant : participants.values()) {
+            System.out.println(participant);
         }
     }
 }

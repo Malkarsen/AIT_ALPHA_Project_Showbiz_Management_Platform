@@ -1,16 +1,15 @@
 package de.ait.model;
 
-import de.ait.utilities.ParticipantStatus;
 import de.ait.exceptions.NoRegisteredException;
+import de.ait.service.CastingManager;
+import de.ait.utilities.ParticipantStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class CastingTest {
@@ -19,11 +18,13 @@ public class CastingTest {
     private Participant participant;
     LocalDate newDate = LocalDate.now().plusDays(30); // Need a save result
     LocalDate castingDate = LocalDate.of(1000, 10, 10);
-
+    private CastingManager castingManager;
     @BeforeEach
     void setUp() {
         casting = new Casting("j123", "Actor casting", "Actors casting for Matrix", castingDate, newDate);
         participant = new Participant("j123", ParticipantStatus.NEW);
+        castingManager = new CastingManager();
+
     }
 
     @Test
@@ -71,7 +72,7 @@ public class CastingTest {
     void registerParticipantTestShouldReturnCorrectlyMapSize() {
 
         try {
-            casting.registerParticipant(participant);
+            castingManager.registerParticipant(participant);
             int size = casting.getParticipants().size();
 
             assertEquals(1, size);
@@ -83,33 +84,32 @@ public class CastingTest {
 
     @Test
     void registerParticipantTestShouldReturnExceptionWithParticipantNull() {
-        assertThrows(NoRegisteredException.class, () -> casting.registerParticipant(null));
+        assertThrows(NoRegisteredException.class, () -> castingManager.registerParticipant(null));
     }
-
+// TODO переделать
     @Test
     void updateParticipantStatusTestShouldReturnTrueAndCorrectStatus() {
 
         try {
-            casting.registerParticipant(participant);
-            boolean updateStatus = casting.updateParticipantStatus("j123", ParticipantStatus.IN_PROGRESS);
+            castingManager.registerParticipant(participant);
+            castingManager.updateParticipantStatus("j123", ParticipantStatus.IN_PROGRESS);
             ParticipantStatus newStatus = participant.getStatus();
 
-            assertTrue(updateStatus);
+
             assertEquals(ParticipantStatus.IN_PROGRESS, newStatus);
         }
         catch (NoRegisteredException exception) {
             System.out.println("NoRegisteredException");
         }
     }
-
+// TODO
     @Test
     void updateParticipantStatusTestShouldReturnFalse() {
-
         try {
-            casting.registerParticipant(participant);
-            boolean updateStatus = casting.updateParticipantStatus(null, ParticipantStatus.IN_PROGRESS);
+            castingManager.registerParticipant(participant);
+            castingManager.updateParticipantStatus(null, ParticipantStatus.IN_PROGRESS);
 
-            assertFalse(updateStatus);
+
         }
         catch (NoRegisteredException exception) {
             System.out.println("NoRegisteredException");

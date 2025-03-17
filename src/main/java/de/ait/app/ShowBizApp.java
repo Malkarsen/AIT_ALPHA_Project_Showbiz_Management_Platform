@@ -1,17 +1,12 @@
-package de.ait;
+package de.ait.app;
 
-import de.ait.app.CastingManagerApp;
-import de.ait.app.ContractManagerApp;
-import de.ait.app.EventManagerApp;
 import lombok.extern.slf4j.Slf4j;
-
 
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 @Slf4j
 public class ShowBizApp {
-
     private static final Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -39,7 +34,7 @@ public class ShowBizApp {
                     if (!keepRunning) break;
                 }
                 case 4 -> {
-                    de.ait.FinanceManagerApp financeManager = new de.ait.FinanceManagerApp();
+                    FinanceManagerApp financeManager = new FinanceManagerApp();
                     boolean keepRunning = financeManager.start();
                     if (!keepRunning) break;
                 }

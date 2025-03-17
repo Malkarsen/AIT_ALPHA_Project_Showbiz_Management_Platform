@@ -85,18 +85,7 @@ public class Casting {
      *
      * @param participant участник для регистрации / the participant to register
      */
-    public void registerParticipant(Participant participant) throws NoRegisteredException{
-        if (participant == null) {
-            System.out.println("Participant is null");
-            log.warn("attempt to registered null");
-            throw new NoRegisteredException("Participant is null");
-        }
-        else {
-            this.participants.put(participant.getId(), participant);
-            System.out.println("New participant was added");
-            log.info("new participant was added");
-        }
-    }
+
 
     /**
      * Обновляет статус участника.
@@ -110,35 +99,12 @@ public class Casting {
      * @return {@code true}, если статус был успешно обновлен; {@code false}, если участник не найден или данные некорректны /
      *         {@code true} if the status was successfully updated; {@code false} if the participant was not found or data was incorrect
      */
-    public boolean updateParticipantStatus(String participantId, ParticipantStatus newStatus) {
-        if (participantId == null || participantId.isEmpty() || newStatus == null) {
-            System.out.println("Participant or new status is null");
-            log.error("Status update is not possible. Participant: {}, Status: {}", participantId, newStatus);
-            throw new IllegalArgumentException("new status is null");
-        } else {
-            if (participants.containsKey(participantId)) {
-                Participant participant = this.participants.get(participantId);
-                participant.setStatus(newStatus);
-                log.info("Status of Participant {} was updated to {}", participantId, newStatus);
-                return true;
-            } else {
-                System.out.println("This participant has not yet registered");
-                log.warn("attempt update states for not registered participant");
-                return false;
-            }
-        }
-    }
+
 
     /**
      * Выводит всех зарегистрированных участников кастинга.
      *
      * Prints all registered participants of the casting.
      */
-    public void showParticipants() {
-        new HashMap<>(participants);
 
-        for (Participant participant : participants.values()) {
-            System.out.println(participant);
-        }
-    }
 }
