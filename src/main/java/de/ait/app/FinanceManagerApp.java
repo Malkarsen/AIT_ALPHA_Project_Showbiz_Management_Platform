@@ -1,4 +1,4 @@
-package de.ait;
+package de.ait.app;
 
 import de.ait.service.FinanceManagerImpl;
 import de.ait.utilities.RecordType;

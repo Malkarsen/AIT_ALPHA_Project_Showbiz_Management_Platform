@@ -1,8 +1,5 @@
-package de.ait;
+package de.ait.app;
 
-import de.ait.app.CastingManagerApp;
-import de.ait.app.ContractManagerApp;
-import de.ait.app.EventManagerApp;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -39,7 +36,7 @@ public class ShowBizApp {
                     if (!keepRunning) break;
                 }
                 case 4 -> {
-                    de.ait.FinanceManagerApp financeManager = new de.ait.FinanceManagerApp();
+                    FinanceManagerApp financeManager = new FinanceManagerApp();
                     boolean keepRunning = financeManager.start();
                     if (!keepRunning) break;
                 }

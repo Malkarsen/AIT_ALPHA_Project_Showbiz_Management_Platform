@@ -1,6 +1,5 @@
 package de.ait.app;
 
-import de.ait.FinanceManagerApp;
 import de.ait.service.CastingManager;
 import de.ait.model.Casting;
 import de.ait.model.Participant;

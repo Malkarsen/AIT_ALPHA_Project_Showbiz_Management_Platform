@@ -32,8 +32,6 @@ public class Event {
     HashSet<String> artistList; // list of artists (String - artist name)
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-
-
     /**
      * Creates a new event object when no tickets have been sold yet and the artists are unknown.
      * The unique identifier is set using UUID (Universally Unique Identifier).
@@ -50,7 +48,9 @@ public class Event {
                  String location,
                  int totalTicketCount,
                  double ticketPrice) {
-        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,16); // Generation of unique identifier
+        String numericUUID = UUID.randomUUID().toString().replaceAll("[^0-9]", "");
+        String paddedUUID = String.format("%-16s", numericUUID).replace(' ', '0');
+        this.id = paddedUUID.substring(0, 16); // Generation of unique identifier
         this.name = name;
         this.eventType = eventType;
         this.date = date;
@@ -79,7 +79,9 @@ public class Event {
                  int totalTicketCount,
                  int soldTicketCount,
                  double ticketPrice) {
-        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,16); // Generation of unique identifier
+        String numericUUID = UUID.randomUUID().toString().replaceAll("[^0-9]", "");
+        String paddedUUID = String.format("%-16s", numericUUID).replace(' ', '0');
+        this.id = paddedUUID.substring(0, 16); // Generation of unique identifier
         this.name = name;
         this.eventType = eventType;
         this.date = date;
@@ -110,7 +112,9 @@ public class Event {
                  int soldTicketCount,
                  double ticketPrice,
                  HashSet<String> artistList) {
-        this.id = UUID.randomUUID().toString().replaceAll("[^0-9]","").substring(0,16); // Generation of unique identifier
+        String numericUUID = UUID.randomUUID().toString().replaceAll("[^0-9]", "");
+        String paddedUUID = String.format("%-16s", numericUUID).replace(' ', '0');
+        this.id = paddedUUID.substring(0, 16); // Generation of unique identifier
         this.name = name;
         this.eventType = eventType;
         this.date = date;
