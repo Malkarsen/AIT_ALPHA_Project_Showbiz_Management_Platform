@@ -12,14 +12,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CastingManagerTest {
 
-    private CastingManagerRepository manager;
+    private CastingManager manager;
     private Casting casting;
     LocalDate castingDate = LocalDate.of(1000, 10, 10);
 
     @BeforeEach
     void setUp() {
         manager = new CastingManager();
-        casting = new Casting( "Actor casting", "Actors casting for Matrix", "Holywood", castingDate);
+        casting = new Casting( "Actor casting", "Actors casting for Matrix", "Hollywood", castingDate);
     }
 
     @Test
