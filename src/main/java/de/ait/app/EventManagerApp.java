@@ -306,11 +306,12 @@ public class EventManagerApp {
         if (event.getArtistList().isEmpty()) {
             System.out.println("The artists list is empty.");
         } else {
-            System.out.println("List of all artists for event ( " + event.getName() + ":");
+            System.out.println("List of all artists for event (" + event.getName() + "):");
             int count = 1;
             for (String artist : event.getArtistList()) {
                 System.out.println("--------------------------------");
                 System.out.println("Artist " + count + " : " + artist);
+                count++;
             }
         }
     }
