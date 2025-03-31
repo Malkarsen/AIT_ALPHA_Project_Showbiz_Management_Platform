@@ -1,5 +1,6 @@
 package de.ait.model;
 
+import de.ait.utilities.ContractTerms;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
@@ -17,7 +18,7 @@ public class Contract {
     private String artistName;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String terms;
+    private ContractTerms terms;
 
     /**
      * Constructor for creating a new contract.
@@ -27,7 +28,7 @@ public class Contract {
      * @param endDate    contract end date.
      * @param terms      contract terms.
      */
-    public Contract(String artistName, LocalDate startDate, LocalDate endDate, String terms) {
+    public Contract(String artistName, LocalDate startDate, LocalDate endDate, ContractTerms terms) {
         validateArtistName(artistName);
         validateDates(startDate, endDate);
         validateTerms(terms);
@@ -119,7 +120,7 @@ public class Contract {
      *
      * @return contract terms.
      */
-    public String getTerms() {
+    public ContractTerms getTerms() {
         return terms;
     }
 
@@ -128,7 +129,7 @@ public class Contract {
      *
      * @param terms new contract terms.
      */
-    public void setTerms(String terms) {
+    public void setTerms(ContractTerms terms) {
         validateTerms(terms);
         this.terms = terms;
         log.info("Updated terms for contract {}: {}", id, terms);
@@ -153,10 +154,10 @@ public class Contract {
         }
     }
 
-    private void validateTerms(String terms) {
-        if (terms == null || terms.trim().isEmpty()) {
-            log.error("Validation error: Contract terms cannot be empty.");
-            throw new IllegalArgumentException("Error: Contract terms cannot be empty.");
+    private void validateTerms(ContractTerms terms) {
+        if (terms == null) {
+            log.error("Validation error: Contract terms cannot be null.");
+            throw new IllegalArgumentException("Error: Contract terms cannot be null.");
         }
     }
 

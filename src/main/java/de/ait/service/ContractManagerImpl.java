@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
  * It provides methods for adding, displaying, and checking contracts.
  */
 @Slf4j
-public class ContractManager implements ContractManagerRepository {
+public class ContractManagerImpl implements ContractManagerRepository {
     private final List<Contract> contracts; // Using final since the collection itself does not change
 
     /**
      * Constructor for creating a new contract manager.
      * Initializes an empty contract collection.
      */
-    public ContractManager() {
+    public ContractManagerImpl() {
         this.contracts = new ArrayList<>();
     }
 

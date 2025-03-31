@@ -1,7 +1,8 @@
 package de.ait.app;
 
-import de.ait.service.ContractManager;
+import de.ait.service.ContractManagerImpl;
 import de.ait.model.Contract;
+import de.ait.utilities.ContractTerms;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.DateTimeException;
@@ -14,7 +15,7 @@ import java.util.Scanner;
 public class ContractManagerApp {
 
     private static final Scanner sc = new Scanner(System.in);
-    private static final ContractManager contraсtManager = new ContractManager();
+    private static final ContractManagerImpl contraсtManager = new ContractManagerImpl();
     private static boolean runProgram = true;
 
     public static void main(String[] args) {
@@ -106,18 +107,24 @@ public class ContractManagerApp {
         System.out.println("Enter contract end date (dd.MM.yyyy):");
         String endDateInput = sc.nextLine().trim();
 
-        System.out.println("Enter contract terms:");
-        String terms = sc.nextLine().trim();
+        // Вывод доступных enum значений
+        System.out.println("Available contract terms:");
+        for (ContractTerms term : ContractTerms.values()) {
+            System.out.println("- " + term.name());
+        }
+        System.out.println("Enter contract terms (as listed above):");
+        String termsInput = sc.nextLine().trim().toUpperCase();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate startDate = LocalDate.parse(startDateInput, formatter);
         LocalDate endDate = LocalDate.parse(endDateInput, formatter);
 
         try {
+            ContractTerms terms = ContractTerms.valueOf(termsInput);
             return new Contract(artistName, startDate, endDate, terms);
         } catch (IllegalArgumentException e) {
-            System.out.println("Error while creating the contract.");
-            log.error("Contract creation error: {}", e.getMessage());
+            System.out.println("Invalid contract terms entered.");
+            log.error("Invalid contract terms: {}", termsInput);
             return null;
         }
     }
@@ -130,16 +137,21 @@ public class ContractManagerApp {
     }
 
     private static void updateContractTerms(Contract contract) {
+        System.out.println("Available contract terms:");
+        for (ContractTerms term : ContractTerms.values()) {
+            System.out.println("- " + term.name());
+        }
         System.out.println("Enter new contract terms:");
-        String newTerms = sc.nextLine().trim();
+        String newTermsInput = sc.nextLine().trim().toUpperCase();
 
         try {
+            ContractTerms newTerms = ContractTerms.valueOf(newTermsInput);
             contract.setTerms(newTerms);
             log.info("Contract terms updated for {}", contract.getId());
             System.out.println("Contract terms updated.");
         } catch (IllegalArgumentException e) {
-            System.out.println("Error: Terms cannot be empty.");
-            log.error("Error updating contract terms: {}", e.getMessage());
+            System.out.println("Error: Invalid contract terms entered.");
+            log.error("Error updating contract terms: {}", newTermsInput);
         }
     }
 
